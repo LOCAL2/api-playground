@@ -3,14 +3,11 @@ import { SlidersHorizontal, X, LayoutList } from 'lucide-react'
 import { Sidebar } from '@/components/layouts/Sidebar'
 import { SearchBar } from '@/components/SearchBar'
 import { EndpointCard } from '@/components/EndpointCard'
-import { MethodBadge } from '@/components/MethodBadge'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { useEndpointFilter } from '@/hooks/useEndpointFilter'
 import { categories } from '@/data/categories'
 import { cn } from '@/utils/cn'
 import type { HttpMethod } from '@/types'
-
-const HTTP_METHODS: HttpMethod[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 
 /**
  * Main endpoint listing page with sidebar navigation, search, and filters.
@@ -102,30 +99,36 @@ export default function EndpointsPage() {
               <SlidersHorizontal className="h-4 w-4 shrink-0 text-zinc-400" aria-hidden="true" />
 
               {/* Method filters */}
-              <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by HTTP method">
+              <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by HTTP method">
                 <button
                   onClick={() => setMethod('All')}
                   className={cn(
-                    'rounded-md border px-2.5 py-1 text-xs font-medium transition-colors',
+                    'cursor-pointer rounded-md border px-4 py-1.5 text-sm font-semibold transition-all',
                     filters.method === 'All'
-                      ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
-                      : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                      ? 'border-zinc-900 bg-zinc-900 text-white shadow-sm dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
+                      : 'border-zinc-300 bg-white text-zinc-500 hover:border-zinc-500 hover:text-zinc-800 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-400 dark:hover:text-zinc-200'
                   )}
                 >
-                  All Methods
+                  All
                 </button>
-                {HTTP_METHODS.map(m => (
+                {(
+                  [
+                    { m: 'GET',    active: 'border-emerald-600 bg-emerald-600 text-white shadow-sm', idle: 'border-emerald-300 bg-emerald-50 text-emerald-700 hover:border-emerald-500 hover:bg-emerald-100 dark:border-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 dark:hover:border-emerald-500' },
+                    { m: 'POST',   active: 'border-blue-600 bg-blue-600 text-white shadow-sm',       idle: 'border-blue-300 bg-blue-50 text-blue-700 hover:border-blue-500 hover:bg-blue-100 dark:border-blue-700 dark:bg-blue-950/40 dark:text-blue-400 dark:hover:border-blue-500' },
+                    { m: 'PUT',    active: 'border-amber-600 bg-amber-600 text-white shadow-sm',     idle: 'border-amber-300 bg-amber-50 text-amber-700 hover:border-amber-500 hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-400 dark:hover:border-amber-500' },
+                    { m: 'PATCH',  active: 'border-purple-600 bg-purple-600 text-white shadow-sm',   idle: 'border-purple-300 bg-purple-50 text-purple-700 hover:border-purple-500 hover:bg-purple-100 dark:border-purple-700 dark:bg-purple-950/40 dark:text-purple-400 dark:hover:border-purple-500' },
+                    { m: 'DELETE', active: 'border-red-600 bg-red-600 text-white shadow-sm',         idle: 'border-red-300 bg-red-50 text-red-700 hover:border-red-500 hover:bg-red-100 dark:border-red-700 dark:bg-red-950/40 dark:text-red-400 dark:hover:border-red-500' },
+                  ] as const
+                ).map(({ m, active, idle }) => (
                   <button
                     key={m}
                     onClick={() => setMethod(m === filters.method ? 'All' : m)}
                     className={cn(
-                      'rounded-md border px-2.5 py-1 transition-colors',
-                      filters.method === m
-                        ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
-                        : 'border-zinc-200 bg-white hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800'
+                      'cursor-pointer rounded-md border px-4 py-1.5 font-mono text-sm font-bold tracking-wide transition-all',
+                      filters.method === m ? active : idle
                     )}
                   >
-                    <MethodBadge method={m} size="sm" />
+                    {m}
                   </button>
                 ))}
               </div>
