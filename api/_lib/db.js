@@ -2182,6 +2182,21 @@ export let students = [
   { id: '13', studentId: '69319010013', name: 'นายวทัญญู ทรายแก้ว',            gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
   { id: '14', studentId: '69319010014', name: 'นายวรเดช พันธ์พืช',             gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
   { id: '15', studentId: '69319010015', name: 'นางสาวอทิตยา สีนารา',           gender: 'หญิง', createdAt: '2024-01-01T00:00:00Z' },
+  { id: '16', studentId: '69319010016', name: 'นายกรณ์ดนัย บุญมา',             gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '17', studentId: '69319010017', name: 'นายกฤติน สุโขพล',               gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '18', studentId: '69319010018', name: 'นายกฤษฎา วรเชษฐ์',              gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '19', studentId: '69319010019', name: 'นายเจษฎา เกือสกุล',             gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '20', studentId: '69319010020', name: 'นายญาณพัฒน์ คงเมือง',           gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '21', studentId: '69319010021', name: 'นายณัฐภัทร คงชื่น',             gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '22', studentId: '69319010022', name: 'นายธนทัต เสาถลาง',              gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '23', studentId: '69319010023', name: 'นายธาวิน เดชวัฒน์',             gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '24', studentId: '69319010024', name: 'นางสาวนภัสสรา เพชรศรี',         gender: 'หญิง', createdAt: '2024-01-01T00:00:00Z' },
+  { id: '25', studentId: '69319010025', name: 'นายนัควัฒน์ อรุณฤกษ์',          gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '26', studentId: '69319010026', name: 'นายปิยังกูร บำรุงศรี',           gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '27', studentId: '69319010027', name: 'นายพัสกร พินทอง',               gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '28', studentId: '69319010028', name: 'นายภควัต ศรีรัตน์',             gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '29', studentId: '69319010029', name: 'นายเศรษฐพงศ์ หนูนารถ',          gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
+  { id: '30', studentId: '69319010030', name: 'นายอรรถกร ดวงจินดา',            gender: 'ชาย',  createdAt: '2024-01-01T00:00:00Z' },
 ]
 
 // ── Refresh tokens store ──────────────────────────────────────────────────
