@@ -8,7 +8,6 @@ const navLinks = [
   { to: '/', label: 'Home', end: true },
   { to: '/endpoints', label: 'API Endpoints', end: false },
   { to: '/categories', label: 'Categories', end: false },
-  { to: '/about', label: 'About', end: false },
 ]
 
 /**

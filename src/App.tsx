@@ -4,7 +4,6 @@ import HomePage from '@/pages/HomePage'
 import EndpointsPage from '@/pages/EndpointsPage'
 import EndpointDetailPage from '@/pages/EndpointDetailPage'
 import CategoriesPage from '@/pages/CategoriesPage'
-import AboutPage from '@/pages/AboutPage'
 
 /**
  * Root application component with routing configuration
@@ -18,7 +17,6 @@ function App() {
           <Route path="endpoints" element={<EndpointsPage />} />
           <Route path="endpoints/:id" element={<EndpointDetailPage />} />
           <Route path="categories" element={<CategoriesPage />} />
-          <Route path="about" element={<AboutPage />} />
           {/* 404 fallback */}
           <Route
             path="*"
