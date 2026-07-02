@@ -22,4 +22,10 @@ export const categories: CategoryInfo[] = [
     icon: 'Package',
     color: 'green',
   },
+  {
+    name: 'Students',
+    description: 'Endpoints สำหรับจัดการข้อมูลนักศึกษา รองรับ CRUD และค้นหาด้วยชื่อหรือรหัสนักศึกษา',
+    icon: 'GraduationCap',
+    color: 'cyan',
+  },
 ]

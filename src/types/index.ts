@@ -11,6 +11,7 @@ export type ApiCategory =
   | 'Users'
   | 'Posts'
   | 'Products'
+  | 'Students'
 
 /** A single path parameter definition */
 export interface PathParameter {

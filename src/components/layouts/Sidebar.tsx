@@ -1,5 +1,5 @@
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import { Users, Package, FileText, LayoutList } from 'lucide-react'
+import { Users, Package, FileText, GraduationCap, LayoutList } from 'lucide-react'
 import { allEndpoints } from '@/data/endpoints'
 import { categories } from '@/data/categories'
 import { cn } from '@/utils/cn'
@@ -10,6 +10,7 @@ const categoryIcons: Record<ApiCategory, React.ElementType> = {
   Users: Users,
   Posts: FileText,
   Products: Package,
+  Students: GraduationCap,
 }
 
 // Get endpoint counts per category

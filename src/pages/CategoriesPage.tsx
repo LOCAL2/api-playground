@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Users, Package, FileText, Tag, ArrowRight } from 'lucide-react'
+import { Users, Package, FileText, GraduationCap, Tag, ArrowRight } from 'lucide-react'
 import { categories } from '@/data/categories'
 import { allEndpoints } from '@/data/endpoints'
 import { Breadcrumb } from '@/components/Breadcrumb'
@@ -10,14 +10,16 @@ const iconMap: Record<string, React.ElementType> = {
   Users,
   Package,
   FileText,
+  GraduationCap,
   Tag,
 }
 
 // Color mapping to Tailwind classes
 const colorMap: Record<string, { bg: string; text: string; border: string; badge: string }> = {
-  blue: { bg: 'bg-blue-50 dark:bg-blue-950/30', text: 'text-blue-700 dark:text-blue-400', border: 'border-blue-100 dark:border-blue-900/50', badge: 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400' },
+  blue:  { bg: 'bg-blue-50 dark:bg-blue-950/30',  text: 'text-blue-700 dark:text-blue-400',  border: 'border-blue-100 dark:border-blue-900/50',  badge: 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400' },
   green: { bg: 'bg-green-50 dark:bg-green-950/30', text: 'text-green-700 dark:text-green-400', border: 'border-green-100 dark:border-green-900/50', badge: 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' },
-  pink: { bg: 'bg-pink-50 dark:bg-pink-950/30', text: 'text-pink-700 dark:text-pink-400', border: 'border-pink-100 dark:border-pink-900/50', badge: 'bg-pink-100 text-pink-700 dark:bg-pink-900/50 dark:text-pink-400' },
+  pink:  { bg: 'bg-pink-50 dark:bg-pink-950/30',  text: 'text-pink-700 dark:text-pink-400',  border: 'border-pink-100 dark:border-pink-900/50',  badge: 'bg-pink-100 text-pink-700 dark:bg-pink-900/50 dark:text-pink-400' },
+  cyan:  { bg: 'bg-cyan-50 dark:bg-cyan-950/30',  text: 'text-cyan-700 dark:text-cyan-400',  border: 'border-cyan-100 dark:border-cyan-900/50',  badge: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/50 dark:text-cyan-400' },
 }
 
 /**

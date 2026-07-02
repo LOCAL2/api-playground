@@ -4,7 +4,7 @@
  */
 import bcrypt from 'bcryptjs'
 import {
-  users, products, categories, posts,
+  users, products, categories, posts, students,
   refreshTokens, nextId,
 } from './_lib/db.js'
 import {
@@ -468,6 +468,55 @@ export default async function handler(req, res) {
     }
     const data = Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b)).map(([period,revenue])=>({ period, revenue: Math.round(revenue*100)/100 }))
     return ok(res, { data, from, to, groupBy, totalRevenue: data.reduce((s,d)=>s+d.revenue,0) })
+  }
+
+  // ── STUDENTS ───────────────────────────────────────────────────────────
+  if (path === '/students') {
+    if (method === 'GET') {
+      const { search } = query
+      let list = [...students]
+      if (search) list = list.filter(s =>
+        s.name.toLowerCase().includes(search.toLowerCase()) ||
+        s.id.includes(search)
+      )
+      return ok(res, { data: list, total: list.length })
+    }
+    if (method === 'POST') {
+      const { id, name, gender } = req.body || {}
+      if (!id || !name) return err(res, 400, 'id and name are required')
+      if (students.find(s => s.id === String(id))) return err(res, 409, 'Student ID already exists')
+      const ns = { id: String(id), name, gender: gender || '', createdAt: new Date().toISOString() }
+      students.push(ns)
+      return ok(res, ns, 201)
+    }
+  }
+
+  if ((m = matchPath('/students/:id', path))) {
+    const idx = students.findIndex(s => s.id === m.id)
+    if (method === 'GET') {
+      if (idx === -1) return err(res, 404, 'Student not found')
+      return ok(res, students[idx])
+    }
+    if (method === 'PUT') {
+      if (idx === -1) return err(res, 404, 'Student not found')
+      const { name, gender } = req.body || {}
+      if (!name) return err(res, 400, 'name is required')
+      students[idx] = { ...students[idx], name, gender: gender ?? students[idx].gender }
+      return ok(res, students[idx])
+    }
+    if (method === 'PATCH') {
+      if (idx === -1) return err(res, 404, 'Student not found')
+      const updates = {}
+      if (req.body?.name !== undefined) updates.name = req.body.name
+      if (req.body?.gender !== undefined) updates.gender = req.body.gender
+      students[idx] = { ...students[idx], ...updates }
+      return ok(res, students[idx])
+    }
+    if (method === 'DELETE') {
+      if (idx === -1) return err(res, 404, 'Student not found')
+      students.splice(idx, 1)
+      return res.status(204).end()
+    }
   }
 
   // ── 404 ────────────────────────────────────────────────────────────────
