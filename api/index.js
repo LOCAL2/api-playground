@@ -473,12 +473,13 @@ export default async function handler(req, res) {
   // ── STUDENTS ───────────────────────────────────────────────────────────
   if (path === '/students') {
     if (method === 'GET') {
-      const { search } = query
+      const { search, gender } = query
       let list = [...students]
       if (search) list = list.filter(s =>
         s.name.toLowerCase().includes(search.toLowerCase()) ||
         s.id.includes(search)
       )
+      if (gender) list = list.filter(s => s.gender === gender)
       return ok(res, { data: list, total: list.length })
     }
     if (method === 'POST') {

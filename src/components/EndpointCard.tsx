@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Lock, Unlock, ChevronRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { MethodBadge } from './MethodBadge'
 import { CopyButton } from './CopyButton'
 import { buildFullUrl } from '@/utils/clipboard'
@@ -55,25 +55,9 @@ export function EndpointCard({ endpoint, className }: EndpointCardProps) {
           </p>
         </div>
 
-        {/* Auth + Arrow */}
-        <div className="flex shrink-0 flex-col items-end gap-2">
+        {/* Arrow */}
+        <div className="flex shrink-0 items-start">
           <ChevronRight className="h-4 w-4 text-zinc-300 transition-transform group-hover:translate-x-0.5 dark:text-zinc-600" />
-          <div
-            className={cn(
-              'flex items-center gap-1 rounded-full px-2 py-0.5 text-xs',
-              endpoint.requiresAuth
-                ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400'
-                : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400'
-            )}
-            title={endpoint.requiresAuth ? 'Requires authentication' : 'No auth required'}
-          >
-            {endpoint.requiresAuth ? (
-              <Lock className="h-3 w-3" aria-hidden="true" />
-            ) : (
-              <Unlock className="h-3 w-3" aria-hidden="true" />
-            )}
-            <span className="hidden sm:inline">{endpoint.requiresAuth ? 'Auth' : 'Public'}</span>
-          </div>
         </div>
       </div>
     </Link>

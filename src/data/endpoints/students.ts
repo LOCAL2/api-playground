@@ -12,7 +12,8 @@ export const studentEndpoints: ApiEndpoint[] = [
     path: '/api/students',
     category: 'Students',
     queryParameters: [
-      { name: 'search', type: 'string', required: false, description: 'ค้นหาจากชื่อหรือรหัสนักศึกษา', example: 'กรวิชญ์' },
+      { name: 'search', type: 'string', required: false, description: 'ค้นหาจากชื่อหรือรหัสนักศึกษา', example: 'วรเดช' },
+      { name: 'gender', type: 'string', required: false, description: 'กรองตามเพศ: ชาย หรือ หญิง', example: 'ชาย' },
     ],
     requiresAuth: false,
     statusCodes: [
@@ -20,7 +21,7 @@ export const studentEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'ตัวอย่าง: GET /api/students',
-      'ตัวอย่าง search ด้วยชื่อ: GET /api/students?search=กรวิชญ์',
+      'ตัวอย่าง search ด้วยชื่อ: GET /api/students?search=วรเดช',
       'ตัวอย่าง search ด้วยรหัส: GET /api/students?search=6931901001',
     ],
   },
@@ -84,7 +85,7 @@ export const studentEndpoints: ApiEndpoint[] = [
     requestBody: {
       contentType: 'application/json',
       fields: [
-        { name: 'name', type: 'string', required: true, description: 'ชื่อ-นามสกุล', example: 'นายกรวิชญ์ บัวชุม' },
+        { name: 'name', type: 'string', required: true, description: 'ชื่อ-นามสกุล', example: 'นาย วรเดช พันธ์พืช' },
         { name: 'gender', type: 'string', required: false, description: 'เพศ: ชาย หรือ หญิง', example: 'ชาย' },
       ],
     },
