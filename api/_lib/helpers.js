@@ -29,7 +29,7 @@ export function err(res, status, message, details = undefined) {
 }
 
 /** Paginate an array */
-export function paginate(arr, page = 1, limit = 20) {
+export function paginate(arr, page = 1, limit = 9999) {
   const p = Math.max(1, Number(page))
   const l = Math.max(1, Number(limit))   // no upper cap — user can set any limit
   const total = arr.length
