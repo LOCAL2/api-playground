@@ -29,9 +29,9 @@ export function err(res, status, message, details = undefined) {
 }
 
 /** Paginate an array */
-export function paginate(arr, page = 1, limit = 20) {
+export function paginate(arr, page = 1, limit = 100) {
   const p = Math.max(1, Number(page))
-  const l = Math.min(100, Math.max(1, Number(limit)))
+  const l = Math.min(500, Math.max(1, Number(limit)))
   const total = arr.length
   const data = arr.slice((p - 1) * l, p * l)
   return { data, pagination: { page: p, limit: l, total } }

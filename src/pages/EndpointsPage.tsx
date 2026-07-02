@@ -1,11 +1,12 @@
-import { useNavigate } from 'react-router-dom'
-import { SlidersHorizontal, X } from 'lucide-react'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
+import { SlidersHorizontal, X, LayoutList } from 'lucide-react'
 import { Sidebar } from '@/components/layouts/Sidebar'
 import { SearchBar } from '@/components/SearchBar'
 import { EndpointCard } from '@/components/EndpointCard'
 import { MethodBadge } from '@/components/MethodBadge'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { useEndpointFilter } from '@/hooks/useEndpointFilter'
+import { categories } from '@/data/categories'
 import { cn } from '@/utils/cn'
 import type { HttpMethod } from '@/types'
 
@@ -17,6 +18,9 @@ const HTTP_METHODS: HttpMethod[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
  */
 export default function EndpointsPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const activeCategory = searchParams.get('category')
+
   const {
     filters,
     filteredEndpoints,
@@ -40,7 +44,7 @@ export default function EndpointsPage() {
       <Breadcrumb items={[{ label: 'API Endpoints' }]} className="mb-6" />
 
       <div className="flex gap-6">
-        {/* Sidebar */}
+        {/* Sidebar — desktop only */}
         <div className="hidden w-56 shrink-0 lg:block">
           <div className="sticky top-20">
             <Sidebar />
@@ -56,6 +60,38 @@ export default function EndpointsPage() {
             <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
               {filteredCount} of {totalCount} endpoints
             </p>
+          </div>
+
+          {/* Mobile category pills — hidden on lg */}
+          <div className="mb-4 -mx-4 px-4 lg:hidden">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+              <Link
+                to="/"
+                className={cn(
+                  'flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                  !activeCategory
+                    ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
+                    : 'border-zinc-200 bg-white text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400'
+                )}
+              >
+                <LayoutList className="h-3.5 w-3.5" aria-hidden="true" />
+                All
+              </Link>
+              {categories.map(cat => (
+                <Link
+                  key={cat.name}
+                  to={`/?category=${encodeURIComponent(cat.name)}`}
+                  className={cn(
+                    'shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                    activeCategory === cat.name
+                      ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
+                      : 'border-zinc-200 bg-white text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400'
+                  )}
+                >
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
           </div>
 
           {/* Filters */}

@@ -32,3 +32,12 @@
     @apply outline-2 outline-offset-2 outline-zinc-500 dark:outline-zinc-400;
   }
 }
+
+/* Hide scrollbar for category pills */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
