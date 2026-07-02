@@ -33,9 +33,8 @@ export function paginate(arr, page = 1, limit = 20) {
   const p = Math.max(1, Number(page))
   const l = Math.min(100, Math.max(1, Number(limit)))
   const total = arr.length
-  const totalPages = Math.ceil(total / l)
   const data = arr.slice((p - 1) * l, p * l)
-  return { data, pagination: { page: p, limit: l, total, totalPages } }
+  return { data, pagination: { page: p, limit: l, total } }
 }
 
 /** Sign JWT access token (15 min) */

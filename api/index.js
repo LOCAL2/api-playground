@@ -4,8 +4,7 @@
  */
 import bcrypt from 'bcryptjs'
 import {
-  users, products, categories, posts, comments,
-  todos, orders, countries, teams, players, movies, books,
+  users, products, categories, posts,
   refreshTokens, nextId,
 } from './_lib/db.js'
 import {
