@@ -38,14 +38,8 @@ export default function HomePage() {
 
           <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:items-center">
             {/* Postman logo */}
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white shadow-md">
-              <svg viewBox="0 0 200 200" className="h-12 w-12" aria-hidden="true">
-                <circle cx="100" cy="100" r="100" fill="#FF6C37"/>
-                <path d="M110.7 80.3l-22.4 22.4 9.9 9.9 22.4-22.4c2.7-2.7 2.7-7.2 0-9.9s-7.2-2.7-9.9 0z" fill="white"/>
-                <path d="M98.2 92.8L75.8 70.4c-2.7-2.7-7.2-2.7-9.9 0s-2.7 7.2 0 9.9l22.4 22.4 9.9-9.9z" fill="white" opacity="0.7"/>
-                <path d="M88.3 102.7l9.9 9.9-22.4 22.4c-2.7 2.7-7.2 2.7-9.9 0s-2.7-7.2 0-9.9l22.4-22.4z" fill="white" opacity="0.5"/>
-                <circle cx="118.5" cy="76.2" r="7" fill="white"/>
-              </svg>
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white shadow-md p-3">
+              <img src="/Postman.svg" alt="Postman" className="h-full w-full object-contain" />
             </div>
 
             {/* Text */}
