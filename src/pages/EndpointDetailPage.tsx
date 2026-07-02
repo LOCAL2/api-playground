@@ -19,7 +19,7 @@ export default function EndpointDetailPage() {
           The endpoint you're looking for doesn't exist.
         </p>
         <Link
-          to="/endpoints"
+          to="/"
           className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-100"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -33,16 +33,15 @@ export default function EndpointDetailPage() {
     <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
       <Breadcrumb
         items={[
-          { label: 'Home', href: '/' },
-          { label: 'API Endpoints', href: '/endpoints' },
-          { label: endpoint.category, href: `/endpoints?category=${encodeURIComponent(endpoint.category)}` },
+          { label: 'API Endpoints', href: '/' },
+          { label: endpoint.category, href: `/?category=${encodeURIComponent(endpoint.category)}` },
           { label: endpoint.name },
         ]}
         className="mb-6"
       />
 
       <Link
-        to="/endpoints"
+        to="/"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -58,7 +57,7 @@ export default function EndpointDetailPage() {
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
           More endpoints in{' '}
           <Link
-            to={`/endpoints?category=${encodeURIComponent(endpoint.category)}`}
+            to={`/?category=${encodeURIComponent(endpoint.category)}`}
             className="font-medium text-zinc-900 hover:underline dark:text-zinc-100"
           >
             {endpoint.category}

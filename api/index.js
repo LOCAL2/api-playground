@@ -106,25 +106,17 @@ export default async function handler(req, res) {
   }
 
   // ── USERS ──────────────────────────────────────────────────────────────
-  if (path === '/users/me' && method === 'GET') {
-    const p4 = requireAuth(req, res); if (!p4) return
-    const u = users.find(u => u.id === p4.sub)
-    if (!u) return err(res, 404, 'User not found')
-    return ok(res, safeUser(u))
-  }
-
   if (path === '/users') {
     if (method === 'GET') {
-      const admin = requireAdmin(req, res); if (!admin) return
-      const { page, limit, sort = 'createdAt', order = 'desc' } = query
+      const { page, limit, search, sort = 'createdAt', order = 'desc' } = query
       let list = [...users].map(safeUser)
+      if (search) list = list.filter(u => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()))
       list.sort((a, b) => order === 'desc'
         ? String(b[sort] ?? '').localeCompare(String(a[sort] ?? ''))
         : String(a[sort] ?? '').localeCompare(String(b[sort] ?? '')))
       return ok(res, paginate(list, page, limit))
     }
     if (method === 'POST') {
-      const admin = requireAdmin(req, res); if (!admin) return
       const { name, email, password, role = 'user', avatar } = req.body || {}
       if (!name || !email || !password) return err(res, 400, 'name, email, and password are required')
       if (users.find(u => u.email === email)) return err(res, 409, 'Email already exists')
@@ -143,29 +135,22 @@ export default async function handler(req, res) {
     const idx = users.findIndex(u => u.id === id)
     if (idx === -1) return err(res, 404, 'User not found')
     if (method === 'GET') {
-      const auth = requireAuth(req, res); if (!auth) return
       return ok(res, safeUser(users[idx]))
     }
     if (method === 'PUT') {
-      const auth = requireAuth(req, res); if (!auth) return
-      if (auth.sub !== id && auth.role !== 'admin') return err(res, 403, 'Cannot update another user\'s profile')
-      const { name, email, avatar, bio } = req.body || {}
+      const { name, email, avatar, bio, role } = req.body || {}
       if (!name || !email) return err(res, 400, 'name and email are required')
-      users[idx] = { ...users[idx], name, email, avatar, bio }
+      users[idx] = { ...users[idx], name, email, avatar, bio, ...(role && { role }) }
       return ok(res, safeUser(users[idx]))
     }
     if (method === 'PATCH') {
-      const auth = requireAuth(req, res); if (!auth) return
-      if (auth.sub !== id && auth.role !== 'admin') return err(res, 403, 'Cannot update another user\'s profile')
-      const allowed = ['name', 'avatar', 'bio']
+      const allowed = ['name', 'email', 'avatar', 'bio', 'role']
       const updates = {}
       for (const key of allowed) { if (req.body?.[key] !== undefined) updates[key] = req.body[key] }
       users[idx] = { ...users[idx], ...updates }
       return ok(res, safeUser(users[idx]))
     }
     if (method === 'DELETE') {
-      const auth = requireAuth(req, res); if (!auth) return
-      if (auth.role !== 'admin') return err(res, 403, 'Admin role required')
       users.splice(idx, 1)
       return res.status(204).end()
     }
@@ -186,13 +171,40 @@ export default async function handler(req, res) {
         : (order === 'asc' ? String(a[sort]??'').localeCompare(String(b[sort]??'')) : String(b[sort]??'').localeCompare(String(a[sort]??''))))
       return ok(res, paginate(list, page, limit))
     }
+    if (method === 'POST') {
+      const { name, price, description, stock = 0 } = req.body || {}
+      if (!name || price === undefined) return err(res, 400, 'name and price are required')
+      const np = { id: nextId(products), name, price: Number(price), description: description || '', stock: Number(stock), createdAt: new Date().toISOString() }
+      products.push(np)
+      return ok(res, np, 201)
+    }
   }
 
   if ((m = matchPath('/products/:id', path))) {
+    const idx = products.findIndex(x => x.id === m.id)
     if (method === 'GET') {
-      const p = products.find(x => x.id === m.id)
-      if (!p) return err(res, 404, 'Product not found')
-      return ok(res, p)
+      if (idx === -1) return err(res, 404, 'Product not found')
+      return ok(res, products[idx])
+    }
+    if (method === 'PUT') {
+      if (idx === -1) return err(res, 404, 'Product not found')
+      const { name, price, description, stock } = req.body || {}
+      if (!name || price === undefined) return err(res, 400, 'name and price are required')
+      products[idx] = { ...products[idx], name, price: Number(price), description: description ?? products[idx].description, stock: stock !== undefined ? Number(stock) : products[idx].stock }
+      return ok(res, products[idx])
+    }
+    if (method === 'PATCH') {
+      if (idx === -1) return err(res, 404, 'Product not found')
+      const allowed = ['name', 'price', 'description', 'stock']
+      const updates = {}
+      for (const key of allowed) { if (req.body?.[key] !== undefined) updates[key] = key === 'price' || key === 'stock' ? Number(req.body[key]) : req.body[key] }
+      products[idx] = { ...products[idx], ...updates }
+      return ok(res, products[idx])
+    }
+    if (method === 'DELETE') {
+      if (idx === -1) return err(res, 404, 'Product not found')
+      products.splice(idx, 1)
+      return res.status(204).end()
     }
   }
 
@@ -218,49 +230,21 @@ export default async function handler(req, res) {
   // ── POSTS ──────────────────────────────────────────────────────────────
   if (path === '/posts') {
     if (method === 'GET') {
-      const { page, limit, userId, tag, search, status } = query
-      const token = extractToken(req)
-      const authUser = token ? verifyAccess(token) : null
-      let list = posts.filter(p => {
-        if (p.status === 'draft') {
-          if (!authUser) return false
-          if (authUser.role !== 'admin' && p.userId !== authUser.sub) return false
-        }
-        return true
-      })
+      const { page, limit, userId, tag, search } = query
+      let list = [...posts]
       if (userId) list = list.filter(p => p.userId === userId)
       if (tag)    list = list.filter(p => p.tags?.includes(tag))
-      if (status && authUser) list = list.filter(p => p.status === status)
-      if (search) list = list.filter(p => p.title.toLowerCase().includes(search.toLowerCase()))
+      if (search) list = list.filter(p => p.title.toLowerCase().includes(search.toLowerCase()) || p.content.toLowerCase().includes(search.toLowerCase()))
       return ok(res, paginate(list, page, limit))
     }
     if (method === 'POST') {
-      const auth = requireAuth(req, res); if (!auth) return
-      const { title, content, excerpt, tags, status = 'draft', coverImage } = req.body || {}
+      const { title, content, tags } = req.body || {}
       if (!title || !content) return err(res, 400, 'title and content are required')
       const np = { id: nextId(posts), title, content,
-        excerpt: excerpt || content.slice(0, 150) + '...', tags: tags||[], status,
-        userId: auth.sub, coverImage: coverImage||null, createdAt: new Date().toISOString() }
+        excerpt: content.slice(0, 150) + '...', tags: tags||[], status: 'published',
+        userId: '1', createdAt: new Date().toISOString() }
       posts.push(np)
       return ok(res, np, 201)
-    }
-  }
-
-  if ((m = matchPath('/posts/:id/comments', path))) {
-    const post = posts.find(p => p.id === m.id)
-    if (!post) return err(res, 404, 'Post not found')
-    if (method === 'GET') {
-      const { page, limit } = query
-      return ok(res, paginate(comments.filter(c => c.postId === m.id), page, limit))
-    }
-    if (method === 'POST') {
-      const auth = requireAuth(req, res); if (!auth) return
-      const { content, parentId } = req.body || {}
-      if (!content?.trim()) return err(res, 400, 'content is required')
-      if (content.length > 1000) return err(res, 400, 'content must not exceed 1000 characters')
-      const nc = { id: nextId(comments), postId: m.id, userId: auth.sub, content: content.trim(), parentId: parentId||null, createdAt: new Date().toISOString() }
-      comments.push(nc)
-      return ok(res, nc, 201)
     }
   }
 
@@ -269,16 +253,19 @@ export default async function handler(req, res) {
     if (idx === -1) return err(res, 404, 'Post not found')
     if (method === 'GET') return ok(res, posts[idx])
     if (method === 'PUT') {
-      const auth = requireAuth(req, res); if (!auth) return
-      if (auth.role !== 'admin' && posts[idx].userId !== auth.sub) return err(res, 403, 'Not the author')
-      const { title, content, tags, status } = req.body || {}
+      const { title, content, tags } = req.body || {}
       if (!title || !content) return err(res, 400, 'title and content are required')
-      posts[idx] = { ...posts[idx], title, content, tags: tags||posts[idx].tags, status: status||posts[idx].status }
+      posts[idx] = { ...posts[idx], title, content, tags: tags || posts[idx].tags }
+      return ok(res, posts[idx])
+    }
+    if (method === 'PATCH') {
+      const allowed = ['title', 'content', 'tags']
+      const updates = {}
+      for (const key of allowed) { if (req.body?.[key] !== undefined) updates[key] = req.body[key] }
+      posts[idx] = { ...posts[idx], ...updates }
       return ok(res, posts[idx])
     }
     if (method === 'DELETE') {
-      const auth = requireAuth(req, res); if (!auth) return
-      if (auth.role !== 'admin' && posts[idx].userId !== auth.sub) return err(res, 403, 'Not the author or admin')
       posts.splice(idx, 1)
       return res.status(204).end()
     }

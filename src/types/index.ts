@@ -9,18 +9,8 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 /** API Categories */
 export type ApiCategory =
   | 'Users'
-  | 'Authentication'
-  | 'Products'
-  | 'Orders'
-  | 'Categories'
   | 'Posts'
-  | 'Comments'
-  | 'Todos'
-  | 'Sports'
-  | 'Movies'
-  | 'Books'
-  | 'Countries'
-  | 'Dashboard'
+  | 'Products'
 
 /** A single path parameter definition */
 export interface PathParameter {

@@ -5,8 +5,7 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { cn } from '@/utils/cn'
 
 const navLinks = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/endpoints', label: 'API Endpoints', end: false },
+  { to: '/', label: 'API Endpoints', end: true },
   { to: '/categories', label: 'Categories', end: false },
 ]
 

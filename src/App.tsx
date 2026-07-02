@@ -1,6 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { MainLayout } from '@/components/layouts/MainLayout'
-import HomePage from '@/pages/HomePage'
 import EndpointsPage from '@/pages/EndpointsPage'
 import EndpointDetailPage from '@/pages/EndpointDetailPage'
 import CategoriesPage from '@/pages/CategoriesPage'
@@ -13,8 +12,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="endpoints" element={<EndpointsPage />} />
+          <Route index element={<EndpointsPage />} />
+          <Route path="endpoints" element={<Navigate to="/" replace />} />
           <Route path="endpoints/:id" element={<EndpointDetailPage />} />
           <Route path="categories" element={<CategoriesPage />} />
           {/* 404 fallback */}

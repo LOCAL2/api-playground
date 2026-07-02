@@ -1,28 +1,15 @@
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import {
-  Users, Lock, Package, ShoppingCart, Tag, FileText,
-  MessageSquare, CheckSquare, Trophy, Film, BookOpen,
-  Globe, LayoutDashboard, LayoutList,
-} from 'lucide-react'
+import { Users, Package, FileText, LayoutList } from 'lucide-react'
 import { allEndpoints } from '@/data/endpoints'
+import { categories } from '@/data/categories'
 import { cn } from '@/utils/cn'
 import type { ApiCategory } from '@/types'
 
 // Icon mapping for each category
 const categoryIcons: Record<ApiCategory, React.ElementType> = {
   Users: Users,
-  Authentication: Lock,
-  Products: Package,
-  Orders: ShoppingCart,
-  Categories: Tag,
   Posts: FileText,
-  Comments: MessageSquare,
-  Todos: CheckSquare,
-  Sports: Trophy,
-  Movies: Film,
-  Books: BookOpen,
-  Countries: Globe,
-  Dashboard: LayoutDashboard,
+  Products: Package,
 }
 
 // Get endpoint counts per category
@@ -43,14 +30,13 @@ interface SidebarProps {
  */
 export function Sidebar({ className }: SidebarProps) {
   const counts = getCountsByCategory()
-  const categories = Object.keys(categoryIcons) as ApiCategory[]
   const location = useLocation()
   const [searchParams] = useSearchParams()
 
   // Active state helpers
-  const isOnEndpoints = location.pathname === '/endpoints'
+  const isOnRoot = location.pathname === '/'
   const activeCategory = searchParams.get('category')
-  const isAllActive = isOnEndpoints && !activeCategory
+  const isAllActive = isOnRoot && !activeCategory
 
   return (
     <aside
@@ -68,7 +54,7 @@ export function Sidebar({ className }: SidebarProps) {
 
       {/* All Endpoints link */}
       <Link
-        to="/endpoints"
+        to="/"
         className={cn(
           'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors',
           isAllActive
@@ -86,16 +72,16 @@ export function Sidebar({ className }: SidebarProps) {
 
       <div className="my-1 border-t border-zinc-100 dark:border-zinc-800" />
 
-      {/* Category links */}
-      {categories.map(category => {
-        const Icon = categoryIcons[category]
-        const count = counts[category] ?? 0
-        const isActive = isOnEndpoints && activeCategory === category
+      {/* Category links — driven from categories.ts */}
+      {categories.map(cat => {
+        const Icon = categoryIcons[cat.name]
+        const count = counts[cat.name] ?? 0
+        const isActive = isOnRoot && activeCategory === cat.name
 
         return (
           <Link
-            key={category}
-            to={`/endpoints?category=${encodeURIComponent(category)}`}
+            key={cat.name}
+            to={`/?category=${encodeURIComponent(cat.name)}`}
             className={cn(
               'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors',
               isActive
@@ -104,8 +90,8 @@ export function Sidebar({ className }: SidebarProps) {
             )}
             aria-current={isActive ? 'page' : undefined}
           >
-            <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className="flex-1 truncate">{category}</span>
+            {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />}
+            <span className="flex-1 truncate">{cat.name}</span>
             {count > 0 && (
               <span className="rounded-full bg-zinc-200 px-1.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
                 {count}

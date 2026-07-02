@@ -48,24 +48,7 @@ export default function HomePage() {
                 จำเป็นต้องมี
               </p>
               <h2 className="text-2xl font-bold text-white">Postman</h2>
-              <p className="mt-2 text-sm text-white/80">
-                ไซต์นี้เป็นแค่คู่มืออ้างอิง ไม่มีปุ่มกด test — ต้องโหลด Postman
-                แล้วเอา URL, headers, body ไปใส่เองนะ
-              </p>
-              <div className="mt-3 flex flex-wrap justify-center gap-3 sm:justify-start">
-                <div className="flex items-center gap-1.5 text-xs text-white/70">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/50" />
-                  Windows / macOS / Linux
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-white/70">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/50" />
-                  ฟรี 100%
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-white/70">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/50" />
-                  ไม่ต้อง credit card
-                </div>
-              </div>
+
             </div>
 
             {/* Download button */}

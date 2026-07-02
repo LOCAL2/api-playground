@@ -1,23 +1,26 @@
 import { useState, useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { allEndpoints } from '@/data/endpoints'
-import type { EndpointFilters, ApiEndpoint, HttpMethod, ApiCategory } from '@/types'
+import type { ApiEndpoint, HttpMethod, ApiCategory } from '@/types'
 
 /**
- * Custom hook for filtering and searching API endpoints
- * Handles search, category filter, and method filter
+ * Custom hook for filtering and searching API endpoints.
+ * Category is driven by the URL ?category= param directly,
+ * so sidebar navigation always reflects the current list.
  */
 export function useEndpointFilter() {
-  const [filters, setFilters] = useState<EndpointFilters>({
-    search: '',
-    category: 'All',
-    method: 'All',
-  })
+  const [searchParams] = useSearchParams()
+  const [search, setSearch] = useState('')
+  const [method, setMethod] = useState<HttpMethod | 'All'>('All')
+
+  // Read category straight from URL — no extra state needed
+  const category = (searchParams.get('category') as ApiCategory | null) ?? 'All'
 
   const filteredEndpoints = useMemo<ApiEndpoint[]>(() => {
     return allEndpoints.filter(endpoint => {
       // Search filter
-      if (filters.search) {
-        const q = filters.search.toLowerCase()
+      if (search) {
+        const q = search.toLowerCase()
         const matchesSearch =
           endpoint.name.toLowerCase().includes(q) ||
           endpoint.description.toLowerCase().includes(q) ||
@@ -26,30 +29,32 @@ export function useEndpointFilter() {
         if (!matchesSearch) return false
       }
 
-      // Category filter
-      if (filters.category !== 'All' && endpoint.category !== filters.category) {
+      // Category filter — from URL
+      if (category !== 'All' && endpoint.category !== category) {
         return false
       }
 
       // Method filter
-      if (filters.method !== 'All' && endpoint.method !== filters.method) {
+      if (method !== 'All' && endpoint.method !== method) {
         return false
       }
 
       return true
     })
-  }, [filters])
+  }, [search, category, method])
 
-  const setSearch = (search: string) => setFilters(prev => ({ ...prev, search }))
-  const setCategory = (category: ApiCategory | 'All') => setFilters(prev => ({ ...prev, category }))
-  const setMethod = (method: HttpMethod | 'All') => setFilters(prev => ({ ...prev, method }))
-  const resetFilters = () => setFilters({ search: '', category: 'All', method: 'All' })
+  const filters = { search, category, method }
+
+  const resetFilters = () => {
+    setSearch('')
+    setMethod('All')
+    // category is reset by navigating to / (clearing ?category param)
+  }
 
   return {
     filters,
     filteredEndpoints,
     setSearch,
-    setCategory,
     setMethod,
     resetFilters,
     totalCount: allEndpoints.length,
