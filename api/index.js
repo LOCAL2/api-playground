@@ -477,16 +477,24 @@ export default async function handler(req, res) {
       let list = [...students]
       if (search) list = list.filter(s =>
         s.name.toLowerCase().includes(search.toLowerCase()) ||
+        s.studentId.includes(search) ||
         s.id.includes(search)
       )
       if (gender) list = list.filter(s => s.gender === gender)
       return ok(res, { data: list, total: list.length })
     }
     if (method === 'POST') {
-      const { id, name, gender } = req.body || {}
-      if (!id || !name) return err(res, 400, 'id and name are required')
-      if (students.find(s => s.id === String(id))) return err(res, 409, 'Student ID already exists')
-      const ns = { id: String(id), name, gender: gender || '', createdAt: new Date().toISOString() }
+      const { studentId, name, gender } = req.body || {}
+      if (!name) return err(res, 400, 'name is required')
+      if (studentId && students.find(s => s.studentId === String(studentId)))
+        return err(res, 409, 'studentId already exists')
+      const ns = {
+        id: nextId(students),
+        studentId: studentId ? String(studentId) : '',
+        name,
+        gender: gender || '',
+        createdAt: new Date().toISOString(),
+      }
       students.push(ns)
       return ok(res, ns, 201)
     }
@@ -500,14 +508,15 @@ export default async function handler(req, res) {
     }
     if (method === 'PUT') {
       if (idx === -1) return err(res, 404, 'Student not found')
-      const { name, gender } = req.body || {}
+      const { studentId, name, gender } = req.body || {}
       if (!name) return err(res, 400, 'name is required')
-      students[idx] = { ...students[idx], name, gender: gender ?? students[idx].gender }
+      students[idx] = { ...students[idx], ...(studentId && { studentId: String(studentId) }), name, gender: gender ?? students[idx].gender }
       return ok(res, students[idx])
     }
     if (method === 'PATCH') {
       if (idx === -1) return err(res, 404, 'Student not found')
       const updates = {}
+      if (req.body?.studentId !== undefined) updates.studentId = String(req.body.studentId)
       if (req.body?.name !== undefined) updates.name = req.body.name
       if (req.body?.gender !== undefined) updates.gender = req.body.gender
       students[idx] = { ...students[idx], ...updates }
