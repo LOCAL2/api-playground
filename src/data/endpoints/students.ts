@@ -69,7 +69,7 @@ export const studentEndpoints: ApiEndpoint[] = [
       { code: 409, meaning: 'Conflict', description: 'studentId นี้มีอยู่แล้ว' },
     ],
     notes: [
-      `ตัวอย่าง request body:\n{\n  "studentId": "69319010014",\n  "name": "นาย วรเดชพันธืพืช",\n  "gender": "ชาย"\n}`,
+      `ตัวอย่าง request body:\n{\n  "studentId": "69319010014",\n  "name": "นาย วรเดช พันธ์พืช",\n  "gender": "ชาย"\n}`,
       'ถ้าไม่ส่ง studentId ระบบจะเพิ่มโดยไม่มีรหัสนักศึกษา',
       'id จะถูก generate อัตโนมัติ เช่น ถ้ามี 30 คนอยู่แล้ว id ใหม่จะเป็น 31',
     ],
@@ -104,7 +104,7 @@ export const studentEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'ตัวอย่าง: PUT /api/students/1',
-      `ตัวอย่าง request body:\n{\n  "name": "นาย วรเดชพันธืพืช",\n  "gender": "ชาย",\n  "studentId": "69319010014"\n}`,
+      `ตัวอย่าง request body:\n{\n  "name": "นาย วรเดช พันธ์พืช",\n  "gender": "ชาย",\n  "studentId": "69319010014"\n}`,
       'PUT ต้องส่ง name เสมอ เพราะแทนที่ข้อมูลทั้งหมด',
     ],
   },
@@ -138,7 +138,7 @@ export const studentEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'ตัวอย่าง: PATCH /api/students/1',
-      `ตัวอย่างเปลี่ยนเฉพาะชื่อ:\n{\n  "name": "นาย วรเดชพันธืพืช"\n}`,
+      `ตัวอย่างเปลี่ยนเฉพาะชื่อ:\n{\n  "name": "นาย วรเดช พันธ์พืช"\n}`,
       `ตัวอย่างเปลี่ยนเฉพาะรหัส:\n{\n  "studentId": "69319010014"\n}`,
       'PATCH ส่งแค่ field ที่อยากเปลี่ยน ไม่ต้องส่งครบ',
     ],
