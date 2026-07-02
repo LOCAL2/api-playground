@@ -90,15 +90,20 @@ export const productEndpoints: ApiEndpoint[] = [
       fields: [
         { name: 'name', type: 'string', required: true, description: 'ชื่อสินค้า', example: 'Wireless Headphone Pro' },
         { name: 'price', type: 'number', required: true, description: 'ราคา', example: '2490' },
-        { name: 'description', type: 'string', required: false, description: 'รายละเอียดสินค้า' },
+        { name: 'description', type: 'string', required: false, description: 'รายละเอียดสินค้า', example: 'หูฟังไร้สาย รุ่นใหม่' },
         { name: 'stock', type: 'integer', required: false, description: 'จำนวนในสต็อก', example: '30' },
       ],
+      note: 'PUT ต้องส่ง name และ price เสมอ field ที่ไม่ส่งจะถูก reset เป็นค่าว่าง',
     },
     requiresAuth: false,
     statusCodes: [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
-      { code: 400, meaning: 'Bad Request', description: 'ข้อมูลไม่ถูกต้อง' },
+      { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง name หรือ price' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบสินค้า' },
+    ],
+    notes: [
+      `ตัวอย่าง request body:\n{\n  "name": "Wireless Headphone Pro",\n  "price": 2490,\n  "description": "หูฟังไร้สาย รุ่นใหม่",\n  "stock": 30\n}`,
+      'PUT แทนที่ข้อมูลทั้งหมด ต้องส่งทุก field ที่ต้องการเก็บไว้',
     ],
   },
   {

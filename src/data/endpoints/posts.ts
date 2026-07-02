@@ -88,12 +88,17 @@ export const postEndpoints: ApiEndpoint[] = [
         { name: 'content', type: 'string', required: true, description: 'เนื้อหาโพสต์', example: 'Updated content...' },
         { name: 'tags', type: 'string[]', required: false, description: 'Array ของ tag', example: '["api", "http"]' },
       ],
+      note: 'PUT ต้องส่ง title และ content เสมอ field ที่ไม่ส่งจะถูก reset เป็นค่าว่าง',
     },
     requiresAuth: false,
     statusCodes: [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
-      { code: 400, meaning: 'Bad Request', description: 'ข้อมูลไม่ถูกต้อง' },
+      { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title หรือ content' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบโพสต์' },
+    ],
+    notes: [
+      `ตัวอย่าง request body:\n{\n  "title": "Updated Title",\n  "content": "Updated content...",\n  "tags": ["api", "http"]\n}`,
+      'PUT แทนที่ข้อมูลทั้งหมด ต้องส่งทุก field ที่ต้องการเก็บไว้',
     ],
   },
   {
