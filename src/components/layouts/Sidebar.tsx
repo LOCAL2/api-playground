@@ -5,7 +5,6 @@ import { categories } from '@/data/categories'
 import { cn } from '@/utils/cn'
 import type { ApiCategory } from '@/types'
 
-// Icon mapping for each category
 const categoryIcons: Record<ApiCategory, React.ElementType> = {
   Users: Users,
   Posts: FileText,
@@ -13,7 +12,6 @@ const categoryIcons: Record<ApiCategory, React.ElementType> = {
   Students: GraduationCap,
 }
 
-// Get endpoint counts per category
 function getCountsByCategory() {
   const counts: Partial<Record<ApiCategory, number>> = {}
   for (const ep of allEndpoints) {
@@ -26,81 +24,79 @@ interface SidebarProps {
   className?: string
 }
 
-/**
- * Sidebar navigation listing all API categories with endpoint counts
- */
+const activeClass = 'bg-zinc-200/80 text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-100'
+const inactiveClass = 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-700/60 dark:hover:text-zinc-100'
+const activeIconClass = 'bg-zinc-300/60 text-zinc-700 dark:bg-zinc-600 dark:text-zinc-200'
+const inactiveIconClass = 'bg-zinc-100 text-zinc-500 group-hover:text-zinc-700 dark:bg-zinc-700 dark:text-zinc-400 dark:group-hover:text-zinc-300'
+const activeBadgeClass = 'bg-zinc-300/60 text-zinc-700 dark:bg-zinc-600 dark:text-zinc-200'
+const inactiveBadgeClass = 'bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-400 dark:group-hover:bg-zinc-600'
+
 export function Sidebar({ className }: SidebarProps) {
   const counts = getCountsByCategory()
   const location = useLocation()
   const [searchParams] = useSearchParams()
 
-  // Active state helpers
   const isOnRoot = location.pathname === '/'
   const activeCategory = searchParams.get('category')
   const isAllActive = isOnRoot && !activeCategory
 
   return (
     <aside
-      className={cn(
-        'flex h-full flex-col gap-1 overflow-y-auto py-4',
-        className
-      )}
+      className={cn('flex h-full flex-col overflow-y-auto p-3', className)}
       aria-label="Category navigation"
     >
-      <div className="mb-2 px-3">
-        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-          Categories
+      {/* ── Overview ── */}
+      <div className="mb-3 rounded-xl border border-zinc-200 bg-white p-2 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-800/60">
+        <p className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+          Overview
         </p>
+        <Link
+          to="/"
+          className={cn('flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium transition-all', isAllActive ? activeClass : inactiveClass)}
+          aria-current={isAllActive ? 'page' : undefined}
+        >
+          <div className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-md', isAllActive ? activeIconClass : inactiveIconClass)}>
+            <LayoutList className="h-3.5 w-3.5" aria-hidden="true" />
+          </div>
+          <span className="flex-1">All Endpoints</span>
+          <span className={cn('rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums', isAllActive ? activeBadgeClass : inactiveBadgeClass)}>
+            {allEndpoints.length}
+          </span>
+        </Link>
       </div>
 
-      {/* All Endpoints link */}
-      <Link
-        to="/"
-        className={cn(
-          'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors',
-          isAllActive
-            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-            : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
-        )}
-        aria-current={isAllActive ? 'page' : undefined}
-      >
-        <LayoutList className="h-4 w-4 shrink-0" aria-hidden="true" />
-        <span className="flex-1">All Endpoints</span>
-        <span className="rounded-full bg-zinc-200 px-1.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
-          {allEndpoints.length}
-        </span>
-      </Link>
+      {/* ── Categories ── */}
+      <div className="rounded-xl border border-zinc-200 bg-white p-2 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-800/60">
+        <p className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+          Categories
+        </p>
+        <nav className="flex flex-col gap-0.5">
+          {categories.map(cat => {
+            const Icon = categoryIcons[cat.name]
+            const count = counts[cat.name] ?? 0
+            const isActive = isOnRoot && activeCategory === cat.name
 
-      <div className="my-1 border-t border-zinc-100 dark:border-zinc-800" />
-
-      {/* Category links — driven from categories.ts */}
-      {categories.map(cat => {
-        const Icon = categoryIcons[cat.name]
-        const count = counts[cat.name] ?? 0
-        const isActive = isOnRoot && activeCategory === cat.name
-
-        return (
-          <Link
-            key={cat.name}
-            to={`/?category=${encodeURIComponent(cat.name)}`}
-            className={cn(
-              'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors',
-              isActive
-                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
-            )}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />}
-            <span className="flex-1 truncate">{cat.name}</span>
-            {count > 0 && (
-              <span className="rounded-full bg-zinc-200 px-1.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
-                {count}
-              </span>
-            )}
-          </Link>
-        )
-      })}
+            return (
+              <Link
+                key={cat.name}
+                to={`/?category=${encodeURIComponent(cat.name)}`}
+                className={cn('group flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium transition-all', isActive ? activeClass : inactiveClass)}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <div className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors', isActive ? activeIconClass : inactiveIconClass)}>
+                  {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
+                </div>
+                <span className="flex-1 truncate">{cat.name}</span>
+                {count > 0 && (
+                  <span className={cn('rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums transition-colors', isActive ? activeBadgeClass : inactiveBadgeClass)}>
+                    {count}
+                  </span>
+                )}
+              </Link>
+            )
+          })}
+        </nav>
+      </div>
     </aside>
   )
 }
