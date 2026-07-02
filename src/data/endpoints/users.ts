@@ -88,14 +88,21 @@ export const userEndpoints: ApiEndpoint[] = [
       fields: [
         { name: 'name', type: 'string', required: true, description: 'ชื่อ-นามสกุล', example: 'Jane Doe' },
         { name: 'email', type: 'string', required: true, description: 'อีเมล', example: 'jane@example.com' },
+        { name: 'avatar', type: 'string', required: false, description: 'URL รูปโปรไฟล์', example: 'https://i.pravatar.cc/150?u=jane' },
+        { name: 'bio', type: 'string', required: false, description: 'คำอธิบายตัวเอง', example: 'นักพัฒนา Full Stack' },
         { name: 'role', type: 'string', required: false, description: 'user หรือ admin', example: 'user' },
       ],
+      note: 'PUT ต้องส่ง name และ email เสมอ field ที่ไม่ส่งจะถูก reset เป็นค่าว่าง',
     },
     requiresAuth: false,
     statusCodes: [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
-      { code: 400, meaning: 'Bad Request', description: 'ข้อมูลไม่ถูกต้อง' },
+      { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง name หรือ email' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบผู้ใช้' },
+    ],
+    notes: [
+      `ตัวอย่าง request body:\n{\n  "name": "Jane Doe",\n  "email": "jane@example.com",\n  "avatar": "https://i.pravatar.cc/150?u=jane",\n  "bio": "นักพัฒนา Full Stack",\n  "role": "user"\n}`,
+      'PUT แทนที่ข้อมูลทั้งหมด ต้องส่งทุก field ที่ต้องการเก็บไว้',
     ],
   },
   {
@@ -117,10 +124,16 @@ export const userEndpoints: ApiEndpoint[] = [
       fields: [
         { name: 'name', type: 'string', required: false, description: 'ชื่อใหม่', example: 'Jane Doe' },
         { name: 'email', type: 'string', required: false, description: 'อีเมลใหม่', example: 'jane@example.com' },
+        { name: 'avatar', type: 'string', required: false, description: 'URL รูปโปรไฟล์ใหม่', example: 'https://i.pravatar.cc/150?u=jane' },
+        { name: 'bio', type: 'string', required: false, description: 'คำอธิบายตัวเองใหม่', example: 'นักพัฒนา Full Stack' },
         { name: 'role', type: 'string', required: false, description: 'role ใหม่', example: 'admin' },
       ],
       note: 'ส่งเฉพาะ field ที่ต้องการเปลี่ยน ไม่ต้องส่งครบทุก field',
     },
+    notes: [
+      `ตัวอย่างเปลี่ยนเฉพาะชื่อ:\n{\n  "name": "Jane Doe"\n}`,
+      `ตัวอย่างเปลี่ยนหลาย field:\n{\n  "email": "newemail@example.com",\n  "bio": "นักพัฒนา Full Stack"\n}`,
+    ],
     requiresAuth: false,
     statusCodes: [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
