@@ -22,7 +22,7 @@ export const studentEndpoints: ApiEndpoint[] = [
     notes: [
       'ตัวอย่าง: GET /api/students',
       'ตัวอย่าง search ด้วยชื่อ: GET /api/students?search=วรเดช',
-      'ตัวอย่าง search ด้วยรหัส: GET /api/students?search=6931901001',
+      'ตัวอย่าง search ด้วยรหัส: GET /api/students?search=69319010014',
       'ตัวอย่าง filter เพศ: GET /api/students?gender=ชาย',
     ],
   },
