@@ -107,12 +107,15 @@ export default async function handler(req, res) {
   // ── USERS ──────────────────────────────────────────────────────────────
   if (path === '/users') {
     if (method === 'GET') {
-      const { page, limit, search, sort = 'createdAt', order = 'desc' } = query
+      const { page, limit, search, sort = 'id', order = 'asc' } = query
       let list = [...users].map(safeUser)
       if (search) list = list.filter(u => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()))
-      list.sort((a, b) => order === 'desc'
-        ? String(b[sort] ?? '').localeCompare(String(a[sort] ?? ''))
-        : String(a[sort] ?? '').localeCompare(String(b[sort] ?? '')))
+      list.sort((a, b) => {
+        const av = sort === 'id' ? Number(a.id) : String(a[sort] ?? '')
+        const bv = sort === 'id' ? Number(b.id) : String(b[sort] ?? '')
+        if (sort === 'id') return order === 'asc' ? av - bv : bv - av
+        return order === 'asc' ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av))
+      })
       return ok(res, paginate(list, page, limit))
     }
     if (method === 'POST') {
