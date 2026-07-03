@@ -5,7 +5,7 @@
 import bcrypt from 'bcryptjs'
 import {
   users, products, categories, posts, students,
-  movies, books, countries,
+  movies, books, countries, todos,
   refreshTokens, nextId,
 } from './_lib/db.js'
 import {
@@ -286,10 +286,9 @@ export default async function handler(req, res) {
 
   // ── TODOS ───────────────────────────────────────────────────────────────
   if (path === '/todos') {
-    const auth = requireAuth(req, res); if (!auth) return
     if (method === 'GET') {
       const { completed, priority } = query
-      let list = todos.filter(t => t.userId === auth.sub)
+      let list = [...todos]
       if (completed !== undefined) list = list.filter(t => t.completed === (completed === 'true'))
       if (priority) list = list.filter(t => t.priority === priority)
       return ok(res, { data: list })
@@ -297,7 +296,7 @@ export default async function handler(req, res) {
     if (method === 'POST') {
       const { title, description, priority = 'medium', dueDate } = req.body || {}
       if (!title?.trim()) return err(res, 400, 'title is required')
-      const nt = { id: nextId(todos), userId: auth.sub, title: title.trim(), description: description||null,
+      const nt = { id: nextId(todos), title: title.trim(), description: description||null,
         priority, completed: false, dueDate: dueDate||null, createdAt: new Date().toISOString() }
       todos.push(nt)
       return ok(res, nt, 201)
@@ -305,16 +304,14 @@ export default async function handler(req, res) {
   }
 
   if ((m = matchPath('/todos/:id/toggle', path)) && method === 'PATCH') {
-    const auth = requireAuth(req, res); if (!auth) return
-    const idx = todos.findIndex(t => t.id === m.id && t.userId === auth.sub)
+    const idx = todos.findIndex(t => t.id === m.id)
     if (idx === -1) return err(res, 404, 'Todo not found')
     todos[idx] = { ...todos[idx], completed: !todos[idx].completed }
     return ok(res, todos[idx])
   }
 
   if ((m = matchPath('/todos/:id', path)) && method === 'DELETE') {
-    const auth = requireAuth(req, res); if (!auth) return
-    const idx = todos.findIndex(t => t.id === m.id && t.userId === auth.sub)
+    const idx = todos.findIndex(t => t.id === m.id)
     if (idx === -1) return err(res, 404, 'Todo not found')
     todos.splice(idx, 1)
     return res.status(204).end()

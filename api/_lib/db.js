@@ -16281,6 +16281,20 @@ export let students = [
 
 
 
+// ── Todos ─────────────────────────────────────────────────────────────────
+export let todos = [
+  { id: '1', title: 'ทดสอบ GET /api/todos', description: 'ลองดึงรายการ todo ทั้งหมด', priority: 'high', completed: false, dueDate: null, createdAt: new Date().toISOString() },
+  { id: '2', title: 'ทดสอบ POST /api/todos', description: 'ลองสร้าง todo ใหม่', priority: 'high', completed: false, dueDate: null, createdAt: new Date().toISOString() },
+  { id: '3', title: 'ทดสอบ PATCH toggle', description: 'ลอง toggle สถานะ todo', priority: 'medium', completed: true, dueDate: null, createdAt: new Date().toISOString() },
+  { id: '4', title: 'ทดสอบ DELETE /api/todos/:id', description: null, priority: 'low', completed: false, dueDate: null, createdAt: new Date().toISOString() },
+  { id: '5', title: 'เรียน REST API', description: 'ศึกษา HTTP Methods ครบ 5 ตัว', priority: 'high', completed: true, dueDate: '2025-12-31', createdAt: new Date().toISOString() },
+  { id: '6', title: 'ทำรายงาน Web Dev', description: 'สรุปเนื้อหา Chapter 5-7', priority: 'medium', completed: false, dueDate: '2025-12-15', createdAt: new Date().toISOString() },
+  { id: '7', title: 'ส่งการบ้าน Postman', description: null, priority: 'high', completed: false, dueDate: null, createdAt: new Date().toISOString() },
+  { id: '8', title: 'อ่านหนังสือ Clean Code', description: 'บทที่ 1-3', priority: 'low', completed: false, dueDate: null, createdAt: new Date().toISOString() },
+  { id: '9', title: 'ติดตั้ง Node.js และ Bun', description: null, priority: 'medium', completed: true, dueDate: null, createdAt: new Date().toISOString() },
+  { id: '10', title: 'Deploy ขึ้น Vercel', description: 'ทดสอบหลัง deploy', priority: 'medium', completed: true, dueDate: null, createdAt: new Date().toISOString() },
+]
+
 // ── Refresh tokens store ──────────────────────────────────────────────────
 export let refreshTokens = new Set()
 

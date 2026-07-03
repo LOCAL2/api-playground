@@ -57,12 +57,12 @@ export default function EndpointsPage() {
           </div>
 
           {/* Mobile category pills — hidden on lg */}
-          <div className="mb-4 -mx-4 px-4 lg:hidden">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <div className="mb-4 lg:hidden">
+            <div className="flex flex-wrap gap-2">
               <Link
                 to="/"
                 className={cn(
-                  'flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                  'flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
                   !activeCategory
                     ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
                     : 'border-zinc-200 bg-white text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400'
@@ -76,7 +76,7 @@ export default function EndpointsPage() {
                   key={cat.name}
                   to={`/?category=${encodeURIComponent(cat.name)}`}
                   className={cn(
-                    'shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                    'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
                     activeCategory === cat.name
                       ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
                       : 'border-zinc-200 bg-white text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400'
