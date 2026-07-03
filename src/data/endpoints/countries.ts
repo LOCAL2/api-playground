@@ -37,7 +37,7 @@ export const countryEndpoints: ApiEndpoint[] = [
     path: '/api/countries/:code',
     category: 'Countries',
     pathParameters: [
-      { name: 'code', type: 'string', required: true, description: 'รหัสประเทศ ISO 3166-1 alpha-2 (case-insensitive)', example: 'TH' },
+      { name: 'code', type: 'string', required: true, description: 'รหัสประเทศ ISO 3166-1 alpha-2 (case-insensitive) เช่น TH, US, JP' },
     ],
     requiresAuth: false,
     statusCodes: [

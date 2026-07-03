@@ -41,7 +41,7 @@ export const bookEndpoints: ApiEndpoint[] = [
     path: '/api/books/:isbn',
     category: 'Books',
     pathParameters: [
-      { name: 'isbn', type: 'string', required: true, description: 'ISBN ของหนังสือ เช่น 9780132350884', example: '9780132350884' },
+      { name: 'isbn', type: 'string', required: true, description: 'ISBN ของหนังสือ เช่น 9780132350884' },
     ],
     requiresAuth: false,
     statusCodes: [
