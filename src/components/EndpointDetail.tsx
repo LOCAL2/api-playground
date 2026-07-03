@@ -199,10 +199,7 @@ export function EndpointDetail({ endpoint }: EndpointDetailProps) {
                 </span>,
                 f.description,
                 f.example ? (
-                  <div key="ex" className="flex items-center gap-1">
-                    <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs dark:bg-zinc-800">{f.example}</code>
-                    <CopyButton text={f.example} />
-                  </div>
+                  <code key="ex" className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs dark:bg-zinc-800">{f.example}</code>
                 ) : '—',
               ])}
             />
