@@ -16,7 +16,7 @@ export const productEndpoints: ApiEndpoint[] = [
       { name: 'category', type: 'string', required: false, description: 'กรองตาม categoryId: 1 (Electronics), 2 (Books), 3 (Accessories)', example: '1' },
       { name: 'minPrice', type: 'number', required: false, description: 'ราคาขั้นต่ำ (บาท)', example: '500' },
       { name: 'maxPrice', type: 'number', required: false, description: 'ราคาสูงสุด (บาท)', example: '5000' },
-      { name: 'inStock', type: 'boolean', required: false, description: 'true = แสดงเฉพาะสินค้าที่มีในสต็อก', example: 'true' },
+      { name: 'inStock', type: 'boolean', required: false, description: 'กรองตามสต็อก: true = มีสต็อก (stock > 0), false = หมดสต็อก (stock = 0)', example: 'true' },
       { name: 'sort', type: 'string', required: false, description: 'เรียงตาม: price, createdAt (default: createdAt)', example: 'price' },
       { name: 'order', type: 'string', required: false, description: 'ทิศทาง: asc หรือ desc (default: desc)', example: 'asc' },
       { name: 'page', type: 'number', required: false, description: 'หน้าที่ต้องการ', example: '1' },

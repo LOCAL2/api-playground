@@ -167,7 +167,8 @@ export default async function handler(req, res) {
       if (category)       list = list.filter(p => p.categoryId === category)
       if (minPrice)       list = list.filter(p => p.price >= Number(minPrice))
       if (maxPrice)       list = list.filter(p => p.price <= Number(maxPrice))
-      if (inStock === 'true') list = list.filter(p => p.stock > 0)
+      if (inStock === 'true')  list = list.filter(p => p.stock > 0)
+      if (inStock === 'false') list = list.filter(p => p.stock === 0)
       if (search)         list = list.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase()))
       list.sort((a, b) => sort === 'price'
         ? (order === 'asc' ? a.price - b.price : b.price - a.price)
