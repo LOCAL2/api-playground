@@ -93,24 +93,30 @@ export function EndpointDetail({ endpoint }: EndpointDetailProps) {
       <Section title="Endpoint URL">
         <div className="space-y-2">
           <div>
-            <p className="mb-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">Base URL</p>
-            <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900">
-              <code className="flex-1 font-mono text-sm text-zinc-600 dark:text-zinc-400">{endpoint.baseUrl}</code>
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Base URL</p>
               <CopyButton text={endpoint.baseUrl} />
             </div>
-          </div>
-          <div>
-            <p className="mb-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">Path</p>
-            <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900">
-              <code className="flex-1 font-mono text-sm text-zinc-600 dark:text-zinc-400">{endpoint.path}</code>
-              <CopyButton text={endpoint.path} />
+            <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900">
+              <code className="block font-mono text-sm text-zinc-600 dark:text-zinc-400">{endpoint.baseUrl}</code>
             </div>
           </div>
           <div>
-            <p className="mb-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">Full URL</p>
-            <div className="flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800">
-              <code className="flex-1 break-all font-mono text-sm font-medium text-zinc-900 dark:text-zinc-100">{fullUrl}</code>
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Path</p>
+              <CopyButton text={endpoint.path} />
+            </div>
+            <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900">
+              <code className="block font-mono text-sm text-zinc-600 dark:text-zinc-400">{endpoint.path}</code>
+            </div>
+          </div>
+          <div>
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Full URL</p>
               <CopyButton text={fullUrl} label="Copy URL" size="md" />
+            </div>
+            <div className="rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800">
+              <code className="block break-all font-mono text-sm font-medium text-zinc-900 dark:text-zinc-100">{fullUrl}</code>
             </div>
           </div>
         </div>

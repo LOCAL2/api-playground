@@ -5,6 +5,7 @@
 import bcrypt from 'bcryptjs'
 import {
   users, products, categories, posts, students,
+  movies, books, countries,
   refreshTokens, nextId,
 } from './_lib/db.js'
 import {

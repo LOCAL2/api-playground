@@ -3,7 +3,6 @@ import { SlidersHorizontal, X, LayoutList } from 'lucide-react'
 import { Sidebar } from '@/components/layouts/Sidebar'
 import { SearchBar } from '@/components/SearchBar'
 import { EndpointCard } from '@/components/EndpointCard'
-import { Breadcrumb } from '@/components/Breadcrumb'
 import { useEndpointFilter } from '@/hooks/useEndpointFilter'
 import { categories } from '@/data/categories'
 import { cn } from '@/utils/cn'
@@ -38,8 +37,6 @@ export default function EndpointsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-      <Breadcrumb items={[{ label: 'API Endpoints' }]} className="mb-6" />
-
       <div className="flex gap-6">
         {/* Sidebar — desktop only */}
         <div className="hidden w-56 shrink-0 lg:block">

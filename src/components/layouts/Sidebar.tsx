@@ -1,5 +1,5 @@
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import { Users, Package, FileText, GraduationCap, LayoutList } from 'lucide-react'
+import { Users, Package, FileText, GraduationCap, LayoutList, Film, BookOpen, Globe, CheckSquare } from 'lucide-react'
 import { allEndpoints } from '@/data/endpoints'
 import { categories } from '@/data/categories'
 import { cn } from '@/utils/cn'
@@ -10,6 +10,10 @@ const categoryIcons: Record<ApiCategory, React.ElementType> = {
   Posts: FileText,
   Products: Package,
   Students: GraduationCap,
+  Movies: Film,
+  Books: BookOpen,
+  Countries: Globe,
+  Todos: CheckSquare,
 }
 
 function getCountsByCategory() {
@@ -26,8 +30,8 @@ interface SidebarProps {
 
 const activeClass = 'bg-zinc-200/80 text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-100'
 const inactiveClass = 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-700/60 dark:hover:text-zinc-100'
-const activeIconClass = 'bg-zinc-300/60 text-zinc-700 dark:bg-zinc-600 dark:text-zinc-200'
-const inactiveIconClass = 'bg-zinc-100 text-zinc-500 group-hover:text-zinc-700 dark:bg-zinc-700 dark:text-zinc-400 dark:group-hover:text-zinc-300'
+const activeIconClass = 'bg-zinc-300/60 text-white dark:bg-zinc-600 dark:text-white'
+const inactiveIconClass = 'bg-zinc-100 text-white group-hover:text-white dark:bg-zinc-700 dark:text-white dark:group-hover:text-white'
 const activeBadgeClass = 'bg-zinc-300/60 text-zinc-700 dark:bg-zinc-600 dark:text-zinc-200'
 const inactiveBadgeClass = 'bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-400 dark:group-hover:bg-zinc-600'
 
