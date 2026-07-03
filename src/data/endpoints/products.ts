@@ -6,7 +6,7 @@ export const productEndpoints: ApiEndpoint[] = [
   {
     id: 'products-list',
     name: 'Get All Products',
-    description: 'ดึงรายการสินค้าทั้งหมด (250+ รายการ) รองรับค้นหา, กรองตามหมวดหมู่, ช่วงราคา, สต็อก, เรียงลำดับ และ pagination — ประยุกต์ใช้ทำร้านค้าออนไลน์, หน้า Product Catalog, หรือระบบจัดการ inventory',
+    description: 'ดึงรายการสินค้าทั้งหมด (250+ รายการ) รองรับค้นหา, กรองตามหมวดหมู่, ช่วงราคา, สต็อก, เรียงลำดับ และ pagination',
     method: 'GET',
     baseUrl: BASE_URL,
     path: '/api/products',
@@ -32,13 +32,12 @@ export const productEndpoints: ApiEndpoint[] = [
       'ตัวอย่าง sort ราคาถูก-แพง: GET /api/products?sort=price&order=asc',
       'ตัวอย่าง เฉพาะสินค้าในสต็อก: GET /api/products?inStock=true&limit=20',
       'categoryId: 1=Electronics, 2=Books, 3=Accessories',
-      'ประยุกต์ใช้: หน้า Shop, หน้ากรองสินค้า, ระบบ inventory management, เปรียบเทียบราคาสินค้า',
     ],
   },
   {
     id: 'products-get-by-id',
     name: 'Get Product by ID',
-    description: 'ดึงข้อมูลสินค้าแบบละเอียดจาก ID รวมถึงราคา, สต็อก, รูปภาพ และ SKU — ประยุกต์ใช้ทำหน้า Product Detail หรือ Quick View ใน modal',
+    description: 'ดึงข้อมูลสินค้าแบบละเอียดจาก ID รวมถึงราคา, สต็อก, รูปภาพ และ SKU',
     method: 'GET',
     baseUrl: BASE_URL,
     path: '/api/products/:id',
@@ -54,13 +53,12 @@ export const productEndpoints: ApiEndpoint[] = [
     notes: [
       'ตัวอย่าง: GET /api/products/1',
       'response มี: id, name, description, price, categoryId, stock, sku, images(array), createdAt',
-      'ประยุกต์ใช้: หน้า Product Detail, Quick View popup, สินค้าใน cart',
     ],
   },
   {
     id: 'products-create',
     name: 'Create Product',
-    description: 'เพิ่มสินค้าใหม่เข้าระบบ — ประยุกต์ใช้ทำหน้า Admin เพิ่มสินค้า หรือ bulk import สินค้าจากไฟล์',
+    description: 'เพิ่มสินค้าใหม่เข้าระบบ',
     method: 'POST',
     baseUrl: BASE_URL,
     path: '/api/products',
@@ -82,14 +80,11 @@ export const productEndpoints: ApiEndpoint[] = [
       { code: 201, meaning: 'Created', description: 'เพิ่มสินค้าสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง name หรือ price' },
     ],
-    notes: [
-      'ประยุกต์ใช้: Admin เพิ่มสินค้าใหม่, import สินค้าจาก CSV, sync สินค้าจากระบบอื่น',
-    ],
   },
   {
     id: 'products-update',
     name: 'Update Product',
-    description: 'อัปเดตข้อมูลสินค้าทั้งหมด ต้องส่ง name และ price — ประยุกต์ใช้ทำหน้า Admin แก้ไขสินค้า',
+    description: 'อัปเดตข้อมูลสินค้าทั้งหมด ต้องส่ง name และ price',
     method: 'PUT',
     baseUrl: BASE_URL,
     path: '/api/products/:id',
@@ -116,14 +111,11 @@ export const productEndpoints: ApiEndpoint[] = [
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง name หรือ price' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบสินค้า' },
     ],
-    notes: [
-      'ประยุกต์ใช้: Admin แก้ไขข้อมูลสินค้าทั้งหมด',
-    ],
   },
   {
     id: 'products-patch',
     name: 'Partially Update Product',
-    description: 'อัปเดตสินค้าบางส่วน เช่น เปลี่ยนแค่ราคาหรือสต็อก — ประยุกต์ใช้ทำ inline edit ราคา หรืออัปเดตสต็อกหลังขาย',
+    description: 'อัปเดตสินค้าบางส่วน ส่งเฉพาะ field ที่ต้องการเปลี่ยน',
     method: 'PATCH',
     baseUrl: BASE_URL,
     path: '/api/products/:id',
@@ -152,13 +144,12 @@ export const productEndpoints: ApiEndpoint[] = [
     notes: [
       'ตัวอย่างลดราคา: PATCH /api/products/1 → {"price": 990}',
       'ตัวอย่างเติม stock: PATCH /api/products/1 → {"stock": 200}',
-      'ประยุกต์ใช้: Flash sale ลดราคา, อัปเดตสต็อกหลัง restock, toggle สินค้า active/inactive',
     ],
   },
   {
     id: 'products-delete',
     name: 'Delete Product',
-    description: 'ลบสินค้าออกจากระบบ — ประยุกต์ใช้ทำ Admin ลบสินค้าที่หมดหรือยกเลิก',
+    description: 'ลบสินค้าออกจากระบบ',
     method: 'DELETE',
     baseUrl: BASE_URL,
     path: '/api/products/:id',
@@ -174,7 +165,6 @@ export const productEndpoints: ApiEndpoint[] = [
     notes: [
       'ตัวอย่าง: DELETE /api/products/250',
       'ไม่ต้องส่ง body ใดๆ',
-      'ประยุกต์ใช้: Admin ลบสินค้าที่หยุดขาย, ลบสินค้าซ้ำ',
     ],
   },
 ]

@@ -6,7 +6,7 @@ export const bookEndpoints: ApiEndpoint[] = [
   {
     id: 'books-list',
     name: 'Get All Books',
-    description: 'ดึงรายการหนังสือทั้งหมด (250+ เล่ม) รองรับการกรองตาม genre, ผู้แต่ง, ค้นหาจากชื่อหรือ ISBN และ pagination — ประยุกต์ใช้ทำแอปรีวิวหนังสือ, ร้านหนังสือออนไลน์, หรือระบบ Digital Library',
+    description: 'ดึงรายการหนังสือทั้งหมด (250+ เล่ม) รองรับการกรองตาม genre, ผู้แต่ง, ค้นหาจากชื่อหรือ ISBN และ pagination',
     method: 'GET',
     baseUrl: BASE_URL,
     path: '/api/books',
@@ -23,19 +23,18 @@ export const bookEndpoints: ApiEndpoint[] = [
       { code: 200, meaning: 'OK', description: 'คืนรายการหนังสือ พร้อม pagination metadata' },
     ],
     notes: [
-      'ตัวอย่าง (ทั้งหมด): GET /api/books',
+      'ตัวอย่าง: GET /api/books',
       'ตัวอย่าง filter genre: GET /api/books?genre=Programming',
       'ตัวอย่าง filter ผู้แต่ง: GET /api/books?author=Martin',
       'ตัวอย่าง search: GET /api/books?search=Clean+Code',
       'ตัวอย่าง search ด้วย ISBN: GET /api/books?search=9780132350884',
       'genre ที่มี: Programming, Design, Business, Self-Help, Science, History, Fiction',
-      'ประยุกต์ใช้: แอปรีวิวหนังสือ, ร้านหนังสือออนไลน์, ระบบแนะนำหนังสือ, ระบบห้องสมุดดิจิทัล',
     ],
   },
   {
     id: 'books-get-by-isbn',
     name: 'Get Book by ISBN',
-    description: 'ดึงข้อมูลหนังสือแบบละเอียดจาก ISBN รวมถึงผู้แต่ง, สำนักพิมพ์, จำนวนหน้า, คะแนน และภาษา — ประยุกต์ใช้ทำ barcode scanner ค้นหาหนัง หรือหน้า Detail ของหนังสือ',
+    description: 'ดึงข้อมูลหนังสือแบบละเอียดจาก ISBN รวมถึงผู้แต่ง, สำนักพิมพ์, จำนวนหน้า, คะแนน และภาษา',
     method: 'GET',
     baseUrl: BASE_URL,
     path: '/api/books/:isbn',
@@ -50,8 +49,7 @@ export const bookEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'ตัวอย่าง (Clean Code): GET /api/books/9780132350884',
-      'response มี fields: id, title, author, isbn, genre, description, year, pages, rating, publisher, language, cover, createdAt',
-      'ประยุกต์ใช้: สแกน barcode หนังสือแล้วดึงข้อมูล, หน้า Detail ของหนังสือในแอป library',
+      'response มี: id, title, author, isbn, genre, description, year, pages, rating, publisher, language, cover, createdAt',
     ],
   },
 ]

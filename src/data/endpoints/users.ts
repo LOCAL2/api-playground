@@ -6,7 +6,7 @@ export const userEndpoints: ApiEndpoint[] = [
   {
     id: 'users-list',
     name: 'Get All Users',
-    description: 'ดึงรายการผู้ใช้ทั้งหมด (50 คน) รองรับค้นหา, เรียงลำดับ และ pagination — ประยุกต์ใช้ทำหน้า Admin User Management, ระบบค้นหาสมาชิก, หรือ leaderboard',
+    description: 'ดึงรายการผู้ใช้ทั้งหมด (50 คน) รองรับค้นหา, เรียงลำดับ และ pagination',
     method: 'GET',
     baseUrl: BASE_URL,
     path: '/api/users',
@@ -28,13 +28,12 @@ export const userEndpoints: ApiEndpoint[] = [
       'ตัวอย่าง เรียงตามชื่อ: GET /api/users?sort=name&order=asc',
       'ตัวอย่าง pagination: GET /api/users?page=1&limit=10',
       'password field จะถูกซ่อนเสมอใน response',
-      'ประยุกต์ใช้: หน้า Admin Panel จัดการสมาชิก, ระบบค้นหาเพื่อน, autocomplete ช่องค้นหา user',
     ],
   },
   {
     id: 'users-get-by-id',
     name: 'Get User by ID',
-    description: 'ดึงข้อมูลผู้ใช้แบบละเอียดตาม ID รวมถึง avatar, bio และ role — ประยุกต์ใช้ทำหน้า Profile ผู้ใช้หรือ User Card ใน dashboard',
+    description: 'ดึงข้อมูลผู้ใช้แบบละเอียดตาม ID รวมถึง avatar, bio และ role',
     method: 'GET',
     baseUrl: BASE_URL,
     path: '/api/users/:id',
@@ -50,13 +49,12 @@ export const userEndpoints: ApiEndpoint[] = [
     notes: [
       'ตัวอย่าง: GET /api/users/1',
       'ตัวอย่าง admin user: GET /api/users/1 (Alice Johnson, role: admin)',
-      'ประยุกต์ใช้: หน้า Profile, User Info Card, แสดงข้อมูลโพสต์แชร์โดยใคร',
     ],
   },
   {
     id: 'users-create',
     name: 'Create User',
-    description: 'สร้างผู้ใช้ใหม่ด้วย name, email, password และ role — ประยุกต์ใช้ทำ Admin สร้าง account ให้พนักงาน หรือระบบ Bulk user creation',
+    description: 'สร้างผู้ใช้ใหม่ด้วย name, email, password และ role',
     method: 'POST',
     baseUrl: BASE_URL,
     path: '/api/users',
@@ -82,13 +80,12 @@ export const userEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'password จะถูก hash ก่อนบันทึก ไม่เก็บ plain text',
-      'ประยุกต์ใช้: Admin สร้าง account ให้พนักงาน, ระบบ onboarding สำหรับ enterprise',
     ],
   },
   {
     id: 'users-update',
     name: 'Update User',
-    description: 'อัปเดตข้อมูลผู้ใช้ทั้งหมด ต้องส่ง name และ email — ประยุกต์ใช้ทำหน้า Edit Profile หรือ Admin แก้ไขข้อมูลสมาชิก',
+    description: 'อัปเดตข้อมูลผู้ใช้ทั้งหมด ต้องส่ง name และ email',
     method: 'PUT',
     baseUrl: BASE_URL,
     path: '/api/users/:id',
@@ -118,13 +115,12 @@ export const userEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'ตัวอย่าง: PUT /api/users/1',
-      'ประยุกต์ใช้: หน้า Edit Profile, Admin แก้ไขข้อมูลสมาชิก',
     ],
   },
   {
     id: 'users-patch',
     name: 'Partially Update User',
-    description: 'อัปเดตข้อมูลผู้ใช้บางส่วน ส่งเฉพาะ field ที่ต้องการเปลี่ยน — ประยุกต์ใช้ทำ inline edit ใน profile page หรืออัปเดต avatar อย่างเดียว',
+    description: 'อัปเดตข้อมูลผู้ใช้บางส่วน ส่งเฉพาะ field ที่ต้องการเปลี่ยน',
     method: 'PATCH',
     baseUrl: BASE_URL,
     path: '/api/users/:id',
@@ -154,13 +150,12 @@ export const userEndpoints: ApiEndpoint[] = [
     notes: [
       'ตัวอย่างเปลี่ยนเฉพาะ bio: PATCH /api/users/1 → {"bio": "Full Stack Developer"}',
       'ตัวอย่างเปลี่ยน avatar: PATCH /api/users/1 → {"avatar": "https://..."}',
-      'ประยุกต์ใช้: Inline edit ใน profile, อัปเดต avatar หลัง crop รูป',
     ],
   },
   {
     id: 'users-delete',
     name: 'Delete User',
-    description: 'ลบผู้ใช้ออกจากระบบ — ประยุกต์ใช้ทำฟีเจอร์ Admin ลบบัญชีผู้ใช้ หรือ "Delete Account" ในหน้าตั้งค่า',
+    description: 'ลบผู้ใช้ออกจากระบบ',
     method: 'DELETE',
     baseUrl: BASE_URL,
     path: '/api/users/:id',
@@ -176,7 +171,6 @@ export const userEndpoints: ApiEndpoint[] = [
     notes: [
       'ตัวอย่าง: DELETE /api/users/50',
       'ไม่ต้องส่ง body ใดๆ response จะว่าง (204 No Content)',
-      'ประยุกต์ใช้: Admin ลบบัญชี, ฟีเจอร์ "Delete My Account" ในหน้าตั้งค่า',
     ],
   },
 ]

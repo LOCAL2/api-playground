@@ -6,7 +6,7 @@ export const postEndpoints: ApiEndpoint[] = [
   {
     id: 'posts-list',
     name: 'Get All Posts',
-    description: 'ดึงรายการโพสต์ทั้งหมด (200+ บทความ) รองรับกรองตาม userId, tag, ค้นหาจากชื่อหรือเนื้อหา และ pagination — ประยุกต์ใช้ทำระบบ Blog, กระดานข่าว, หรือ Content Feed',
+    description: 'ดึงรายการโพสต์ทั้งหมด (200+ บทความ) รองรับกรองตาม userId, tag, ค้นหาจากชื่อหรือเนื้อหา และ pagination',
     method: 'GET',
     baseUrl: BASE_URL,
     path: '/api/posts',
@@ -29,13 +29,12 @@ export const postEndpoints: ApiEndpoint[] = [
       'ตัวอย่าง โพสต์ของ user 1: GET /api/posts?userId=1',
       'ตัวอย่าง pagination: GET /api/posts?page=1&limit=10',
       'tags ที่มี: api, rest, tutorial, http, json, postman, auth, security, crud, cors, node ฯลฯ',
-      'ประยุกต์ใช้: หน้า Blog หลัก, feed บทความ, กรองบทความตาม tag หรือผู้เขียน',
     ],
   },
   {
     id: 'posts-get-by-id',
     name: 'Get Post by ID',
-    description: 'ดึงข้อมูลโพสต์แบบละเอียดจาก ID รวมถึงเนื้อหา, tags, status และ userId ของผู้เขียน — ประยุกต์ใช้ทำหน้าอ่านบทความ',
+    description: 'ดึงข้อมูลโพสต์แบบละเอียดจาก ID รวมถึงเนื้อหา, tags, status และ userId ของผู้เขียน',
     method: 'GET',
     baseUrl: BASE_URL,
     path: '/api/posts/:id',
@@ -51,13 +50,12 @@ export const postEndpoints: ApiEndpoint[] = [
     notes: [
       'ตัวอย่าง: GET /api/posts/1',
       'response มี: id, title, content, excerpt, tags, status, userId, coverImage, createdAt',
-      'ประยุกต์ใช้: หน้าอ่านบทความเต็ม, แสดง related posts, SEO metadata',
     ],
   },
   {
     id: 'posts-create',
     name: 'Create Post',
-    description: 'สร้างโพสต์ใหม่ด้วย title, content และ tags — ประยุกต์ใช้ทำหน้า Write Blog, Rich Text Editor, หรือระบบ CMS',
+    description: 'สร้างโพสต์ใหม่ด้วย title, content และ tags',
     method: 'POST',
     baseUrl: BASE_URL,
     path: '/api/posts',
@@ -82,13 +80,12 @@ export const postEndpoints: ApiEndpoint[] = [
       'excerpt จะถูก generate จาก content อัตโนมัติ (150 ตัวอักษรแรก)',
       'status จะเป็น "published" เสมอ',
       'userId จะถูก set เป็น "1" โดยอัตโนมัติ',
-      'ประยุกต์ใช้: หน้า Write ใน Blog platform, ส่งบทความจาก Rich Text Editor',
     ],
   },
   {
     id: 'posts-update',
     name: 'Update Post',
-    description: 'อัปเดตโพสต์ทั้งหมด ต้องส่ง title และ content — ประยุกต์ใช้ทำหน้า Edit Post หรือ CMS',
+    description: 'อัปเดตโพสต์ทั้งหมด ต้องส่ง title และ content',
     method: 'PUT',
     baseUrl: BASE_URL,
     path: '/api/posts/:id',
@@ -114,14 +111,11 @@ export const postEndpoints: ApiEndpoint[] = [
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title หรือ content' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบโพสต์' },
     ],
-    notes: [
-      'ประยุกต์ใช้: หน้า Edit ใน Blog platform, แก้ไข content ใน CMS',
-    ],
   },
   {
     id: 'posts-patch',
     name: 'Partially Update Post',
-    description: 'อัปเดตโพสต์บางส่วน เช่น เปลี่ยนแค่ title หรือ tags — ประยุกต์ใช้ทำ inline edit หรืออัปเดต tag อย่างเดียว',
+    description: 'อัปเดตโพสต์บางส่วน ส่งเฉพาะ field ที่ต้องการเปลี่ยน',
     method: 'PATCH',
     baseUrl: BASE_URL,
     path: '/api/posts/:id',
@@ -148,13 +142,12 @@ export const postEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'ตัวอย่างเปลี่ยนแค่ tags: PATCH /api/posts/1 → {"tags": ["api", "rest"]}',
-      'ประยุกต์ใช้: เพิ่ม/แก้ tag บทความ, แก้ไข title โดยไม่แตะ content',
     ],
   },
   {
     id: 'posts-delete',
     name: 'Delete Post',
-    description: 'ลบโพสต์ออกจากระบบ — ประยุกต์ใช้ทำปุ่มลบบทความใน CMS หรือ Admin Panel',
+    description: 'ลบโพสต์ออกจากระบบ',
     method: 'DELETE',
     baseUrl: BASE_URL,
     path: '/api/posts/:id',
@@ -170,7 +163,6 @@ export const postEndpoints: ApiEndpoint[] = [
     notes: [
       'ตัวอย่าง: DELETE /api/posts/200',
       'ไม่ต้องส่ง body ใดๆ',
-      'ประยุกต์ใช้: Admin ลบบทความ, ผู้เขียนลบโพสต์ของตัวเอง',
     ],
   },
 ]
