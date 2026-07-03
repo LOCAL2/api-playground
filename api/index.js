@@ -375,16 +375,53 @@ export default async function handler(req, res) {
 
   // ── COUNTRIES ──────────────────────────────────────────────────────────
   if (path === '/countries') {
-    const { region, search } = query
-    let list = [...countries]
-    if (region) list = list.filter(c => c.region.toLowerCase() === region.toLowerCase())
-    if (search) list = list.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
-    return ok(res, { data: list, total: list.length })
+    if (method === 'GET') {
+      const { region, search } = query
+      let list = [...countries]
+      if (region) list = list.filter(c => c.region.toLowerCase() === region.toLowerCase())
+      if (search) list = list.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+      return ok(res, { data: list, total: list.length })
+    }
+    if (method === 'POST') {
+      const { name, code, capital, region, population, area, currency, language, flag } = req.body || {}
+      if (!name || !code) return err(res, 400, 'name and code are required')
+      if (countries.find(c => c.code.toUpperCase() === code.toUpperCase())) return err(res, 409, 'Country code already exists')
+      const nc = { id: nextId(countries), name, code: code.toUpperCase(), capital: capital || '',
+        region: region || '', population: population || 0, area: area || 0,
+        currency: currency || '', language: language || '', flag: flag || '' }
+      countries.push(nc)
+      return ok(res, nc, 201)
+    }
   }
   if ((m = matchPath('/countries/:code', path))) {
-    const country = countries.find(c => c.code.toUpperCase() === m.code.toUpperCase())
-    if (!country) return err(res, 404, 'Country not found')
-    return ok(res, country)
+    const idx = countries.findIndex(c => c.code.toUpperCase() === m.code.toUpperCase())
+    if (method === 'GET') {
+      if (idx === -1) return err(res, 404, 'Country not found')
+      return ok(res, countries[idx])
+    }
+    if (method === 'PUT') {
+      if (idx === -1) return err(res, 404, 'Country not found')
+      const { name, capital, region, population, area, currency, language, flag } = req.body || {}
+      if (!name) return err(res, 400, 'name is required')
+      countries[idx] = { ...countries[idx], name, capital: capital ?? countries[idx].capital,
+        region: region ?? countries[idx].region, population: population ?? countries[idx].population,
+        area: area ?? countries[idx].area, currency: currency ?? countries[idx].currency,
+        language: language ?? countries[idx].language, flag: flag ?? countries[idx].flag }
+      return ok(res, countries[idx])
+    }
+    if (method === 'PATCH') {
+      if (idx === -1) return err(res, 404, 'Country not found')
+      const allowed = ['name','capital','region','population','area','currency','language','flag']
+      const updates = {}
+      for (const key of allowed) { if (req.body?.[key] !== undefined) updates[key] = req.body[key] }
+      countries[idx] = { ...countries[idx], ...updates }
+      return ok(res, countries[idx])
+    }
+    if (method === 'DELETE') {
+      if (idx === -1) return err(res, 404, 'Country not found')
+      countries.splice(idx, 1)
+      return res.status(204).end()
+    }
   }
 
   // ── SPORTS ─────────────────────────────────────────────────────────────
@@ -404,33 +441,108 @@ export default async function handler(req, res) {
 
   // ── MOVIES ─────────────────────────────────────────────────────────────
   if (path === '/movies') {
-    const { page, limit, genre, year, minRating, search } = query
-    let list = [...movies]
-    if (genre)     list = list.filter(m => m.genre.some(g => g.toLowerCase() === genre.toLowerCase()))
-    if (year)      list = list.filter(m => m.year === Number(year))
-    if (minRating) list = list.filter(m => m.rating >= Number(minRating))
-    if (search)    list = list.filter(m => m.title.toLowerCase().includes(search.toLowerCase()))
-    return ok(res, paginate(list, page, limit))
+    if (method === 'GET') {
+      const { page, limit, genre, year, minRating, search } = query
+      let list = [...movies]
+      if (genre)     list = list.filter(m => m.genre.some(g => g.toLowerCase() === genre.toLowerCase()))
+      if (year)      list = list.filter(m => m.year === Number(year))
+      if (minRating) list = list.filter(m => m.rating >= Number(minRating))
+      if (search)    list = list.filter(m => m.title.toLowerCase().includes(search.toLowerCase()))
+      return ok(res, paginate(list, page, limit))
+    }
+    if (method === 'POST') {
+      const { title, genre, year, rating, director, cast, duration, language, description } = req.body || {}
+      if (!title) return err(res, 400, 'title is required')
+      const nm = { id: nextId(movies), title, description: description || '', genre: genre || [], year: year || null,
+        rating: rating || null, director: director || '', cast: cast || [], duration: duration || null,
+        language: language || 'English', poster: `https://picsum.photos/seed/movie${nextId(movies)}/300/450`,
+        createdAt: new Date().toISOString() }
+      movies.push(nm)
+      return ok(res, nm, 201)
+    }
   }
   if ((m = matchPath('/movies/:id', path))) {
-    const movie = movies.find(x => x.id === m.id)
-    if (!movie) return err(res, 404, 'Movie not found')
-    return ok(res, movie)
+    const idx = movies.findIndex(x => x.id === m.id)
+    if (method === 'GET') {
+      if (idx === -1) return err(res, 404, 'Movie not found')
+      return ok(res, movies[idx])
+    }
+    if (method === 'PUT') {
+      if (idx === -1) return err(res, 404, 'Movie not found')
+      const { title, genre, year, rating, director, cast, duration, language, description } = req.body || {}
+      if (!title) return err(res, 400, 'title is required')
+      movies[idx] = { ...movies[idx], title, description: description ?? movies[idx].description,
+        genre: genre ?? movies[idx].genre, year: year ?? movies[idx].year, rating: rating ?? movies[idx].rating,
+        director: director ?? movies[idx].director, cast: cast ?? movies[idx].cast,
+        duration: duration ?? movies[idx].duration, language: language ?? movies[idx].language }
+      return ok(res, movies[idx])
+    }
+    if (method === 'PATCH') {
+      if (idx === -1) return err(res, 404, 'Movie not found')
+      const allowed = ['title','description','genre','year','rating','director','cast','duration','language']
+      const updates = {}
+      for (const key of allowed) { if (req.body?.[key] !== undefined) updates[key] = req.body[key] }
+      movies[idx] = { ...movies[idx], ...updates }
+      return ok(res, movies[idx])
+    }
+    if (method === 'DELETE') {
+      if (idx === -1) return err(res, 404, 'Movie not found')
+      movies.splice(idx, 1)
+      return res.status(204).end()
+    }
   }
 
   // ── BOOKS ──────────────────────────────────────────────────────────────
   if (path === '/books') {
-    const { page, limit, genre, author, search } = query
-    let list = [...books]
-    if (genre)  list = list.filter(b => b.genre.toLowerCase() === genre.toLowerCase())
-    if (author) list = list.filter(b => b.author.toLowerCase().includes(author.toLowerCase()))
-    if (search) list = list.filter(b => b.title.toLowerCase().includes(search.toLowerCase()) || b.isbn.includes(search))
-    return ok(res, paginate(list, page, limit))
+    if (method === 'GET') {
+      const { page, limit, genre, author, search } = query
+      let list = [...books]
+      if (genre)  list = list.filter(b => b.genre.toLowerCase() === genre.toLowerCase())
+      if (author) list = list.filter(b => b.author.toLowerCase().includes(author.toLowerCase()))
+      if (search) list = list.filter(b => b.title.toLowerCase().includes(search.toLowerCase()) || b.isbn.includes(search))
+      return ok(res, paginate(list, page, limit))
+    }
+    if (method === 'POST') {
+      const { title, author, isbn, genre, description, year, pages, rating, publisher, language } = req.body || {}
+      if (!title || !author) return err(res, 400, 'title and author are required')
+      if (isbn && books.find(b => b.isbn === isbn)) return err(res, 409, 'ISBN already exists')
+      const nb = { id: nextId(books), title, author, isbn: isbn || '', genre: genre || 'General',
+        description: description || '', year: year || null, pages: pages || null,
+        rating: rating || null, publisher: publisher || '', language: language || 'English',
+        cover: `https://picsum.photos/seed/book${nextId(books)}/200/300`, createdAt: new Date().toISOString() }
+      books.push(nb)
+      return ok(res, nb, 201)
+    }
   }
   if ((m = matchPath('/books/:isbn', path))) {
-    const book = books.find(b => b.isbn === m.isbn)
-    if (!book) return err(res, 404, 'Book not found')
-    return ok(res, book)
+    const idx = books.findIndex(b => b.isbn === m.isbn)
+    if (method === 'GET') {
+      if (idx === -1) return err(res, 404, 'Book not found')
+      return ok(res, books[idx])
+    }
+    if (method === 'PUT') {
+      if (idx === -1) return err(res, 404, 'Book not found')
+      const { title, author, genre, description, year, pages, rating, publisher, language } = req.body || {}
+      if (!title || !author) return err(res, 400, 'title and author are required')
+      books[idx] = { ...books[idx], title, author, genre: genre ?? books[idx].genre,
+        description: description ?? books[idx].description, year: year ?? books[idx].year,
+        pages: pages ?? books[idx].pages, rating: rating ?? books[idx].rating,
+        publisher: publisher ?? books[idx].publisher, language: language ?? books[idx].language }
+      return ok(res, books[idx])
+    }
+    if (method === 'PATCH') {
+      if (idx === -1) return err(res, 404, 'Book not found')
+      const allowed = ['title','author','genre','description','year','pages','rating','publisher','language']
+      const updates = {}
+      for (const key of allowed) { if (req.body?.[key] !== undefined) updates[key] = req.body[key] }
+      books[idx] = { ...books[idx], ...updates }
+      return ok(res, books[idx])
+    }
+    if (method === 'DELETE') {
+      if (idx === -1) return err(res, 404, 'Book not found')
+      books.splice(idx, 1)
+      return res.status(204).end()
+    }
   }
 
   // ── DASHBOARD ──────────────────────────────────────────────────────────
