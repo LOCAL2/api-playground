@@ -38,7 +38,6 @@ const activeBadgeClass = 'bg-zinc-300/60 text-zinc-700 dark:bg-zinc-600 dark:tex
 const inactiveBadgeClass = 'bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-400 dark:group-hover:bg-zinc-600'
 
 export function Sidebar({ className }: SidebarProps) {
-  const counts = getCountsByCategory()
   const location = useLocation()
   const [searchParams] = useSearchParams()
 
@@ -74,18 +73,25 @@ export function Sidebar({ className }: SidebarProps) {
           Categories
         </p>
         <nav className="flex flex-col gap-0.5">
+        <nav className="flex flex-col gap-0.5">
           {categories.map(cat => {
             const Icon = categoryIcons[cat.name]
-            const count = counts[cat.name] ?? 0
             const isActive = isOnRoot && activeCategory === cat.name
 
             return (
               <Link
                 key={cat.name}
                 to={`/?category=${encodeURIComponent(cat.name)}`}
-                className={cn('group flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium transition-all', isActive ? activeClass : inactiveClass)}
+                className={cn(
+                  'group relative flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium transition-all duration-150',
+                  isActive ? activeClass : inactiveClass
+                )}
                 aria-current={isActive ? 'page' : undefined}
               >
+                {/* active indicator bar */}
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-zinc-500 dark:bg-zinc-300" />
+                )}
                 <div className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors', isActive ? activeIconClass : inactiveIconClass)}>
                   {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
                 </div>
