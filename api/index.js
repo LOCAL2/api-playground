@@ -15,13 +15,11 @@ const MUTATION_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE']
 
 async function logActivity(req, path, statusCode) {
   try {
-    const method = req.method
-    if (!MUTATION_METHODS.includes(method)) return
     const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.headers['x-real-ip'] || 'unknown'
-    const body = req.body ? JSON.stringify(req.body) : null
+    const body = req.body && Object.keys(req.body).length ? JSON.stringify(req.body) : null
     await db.execute({
       sql: 'INSERT INTO activity_logs (method, path, body, ip, status_code, timestamp) VALUES (?,?,?,?,?,?)',
-      args: [method, `/api${path}`, body, ip, statusCode, new Date().toISOString()],
+      args: [req.method, `/api${path}`, body, ip, statusCode, new Date().toISOString()],
     })
   } catch (_) { /* ไม่ให้ log error กระทบ main response */ }
 }
