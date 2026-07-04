@@ -93,6 +93,9 @@ export function Sidebar({ className }: SidebarProps) {
                   {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
                 </div>
                 <span className="flex-1 truncate">{cat.name}</span>
+                {cat.name === 'Students' && (
+                  <span className="rounded-full bg-blue-500 px-1.5 py-0.5 text-[10px] font-bold text-white">TNK</span>
+                )}
                 {count > 0 && (
                   <span className={cn('rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums transition-colors', isActive ? activeBadgeClass : inactiveBadgeClass)}>
                     {count}
