@@ -17,9 +17,10 @@ async function logActivity(req, path, statusCode) {
   try {
     const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.headers['x-real-ip'] || 'unknown'
     const body = req.body && Object.keys(req.body).length ? JSON.stringify(req.body) : null
+    const userAgent = req.headers['user-agent'] || null
     await db.execute({
-      sql: 'INSERT INTO activity_logs (method, path, body, ip, status_code, timestamp) VALUES (?,?,?,?,?,?)',
-      args: [req.method, `/api${path}`, body, ip, statusCode, new Date().toISOString()],
+      sql: 'INSERT INTO activity_logs (method, path, body, ip, status_code, user_agent, timestamp) VALUES (?,?,?,?,?,?,?)',
+      args: [req.method, `/api${path}`, body, ip, statusCode, userAgent, new Date().toISOString()],
     })
   } catch (_) { /* ไม่ให้ log error กระทบ main response */ }
 }
