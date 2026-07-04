@@ -9,6 +9,7 @@ export function withCors(res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   res.setHeader('Content-Type', 'application/json')
+  res.setHeader('Connection', 'keep-alive')
   return res
 }
 
@@ -18,14 +19,20 @@ export function json(res, status, data) {
   return res.status(status).json(data)
 }
 
-/** Success response wrapper */
+/** Success response wrapper — GET requests get a short cache */
 export function ok(res, data, status = 200) {
-  return json(res, status, { success: true, data })
+  withCors(res)
+  // Cache GET responses for 5 seconds at Vercel edge, 10s in browser
+  // Mutations (POST/PUT/PATCH/DELETE) should not be cached — caller handles this
+  res.setHeader('Cache-Control', 'public, s-maxage=5, stale-while-revalidate=10')
+  return res.status(status).json({ success: true, data })
 }
 
 /** Error response wrapper */
 export function err(res, status, message, details = undefined) {
-  return json(res, status, { success: false, error: { message, ...(details && { details }) } })
+  withCors(res)
+  res.setHeader('Cache-Control', 'no-store')
+  return res.status(status).json({ success: false, error: { message, ...(details && { details }) } })
 }
 
 /** Paginate an array */

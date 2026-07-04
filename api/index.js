@@ -55,6 +55,11 @@ export default async function handler(req, res) {
     logActivity(req, path, 200)
   }
 
+  // mutations ไม่ cache
+  if (method !== 'GET') {
+    res.setHeader('Cache-Control', 'no-store')
+  }
+
   const _ok = (data, status = 200) => ok(res, data, status)
   const _err = (status, message) => err(res, status, message)
 
