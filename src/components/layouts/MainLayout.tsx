@@ -1,16 +1,25 @@
 import { Outlet } from 'react-router-dom'
 import { Navbar } from './Navbar'
+import { Sidebar } from './Sidebar'
 
-/**
- * Main layout wrapper with top navigation bar
- */
 export function MainLayout() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <Navbar />
-      <main id="main-content">
-        <Outlet />
-      </main>
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <div className="flex gap-6">
+          {/* Sidebar — desktop only */}
+          <div className="hidden w-52 shrink-0 lg:block">
+            <div className="sticky top-20 rounded-xl border border-zinc-200 bg-white py-2 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-900">
+              <Sidebar />
+            </div>
+          </div>
+          {/* Page content */}
+          <main id="main-content" className="min-w-0 flex-1">
+            <Outlet />
+          </main>
+        </div>
+      </div>
     </div>
   )
 }

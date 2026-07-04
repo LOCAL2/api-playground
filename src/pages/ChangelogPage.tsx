@@ -74,7 +74,7 @@ export default function ChangelogPage() {
   }, [])
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+    <div className="py-2">
       {/* Header */}
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
