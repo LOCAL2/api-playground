@@ -32,6 +32,42 @@ function formatThaiTime(iso: string) {
   } catch { return iso }
 }
 
+function parseUA(ua: string | null): string {
+  if (!ua) return '-'
+  // Postman
+  if (ua.includes('PostmanRuntime')) return `Postman ${ua.match(/PostmanRuntime\/([\d.]+)/)?.[1] || ''}`
+  // curl
+  if (ua.startsWith('curl/')) return ua
+  // Insomnia
+  if (ua.includes('insomnia')) return `Insomnia ${ua.match(/insomnia\/([\d.]+)/i)?.[1] || ''}`
+  // HTTPie
+  if (ua.includes('HTTPie')) return `HTTPie ${ua.match(/HTTPie\/([\d.]+)/)?.[1] || ''}`
+  // axios / node-fetch / got
+  if (ua.includes('axios/')) return `axios ${ua.match(/axios\/([\d.]+)/)?.[1] || ''}`
+  if (ua.includes('node-fetch')) return 'node-fetch'
+  if (ua.includes('got/')) return `got ${ua.match(/got\/([\d.]+)/)?.[1] || ''}`
+  // Python requests
+  if (ua.includes('python-requests')) return `Python requests ${ua.match(/python-requests\/([\d.]+)/)?.[1] || ''}`
+  // Browser detection
+  const browser =
+    ua.match(/Edg\/([\d.]+)/)   ? `Edge ${ua.match(/Edg\/([\d.]+)/)?.[1]?.split('.')[0]}` :
+    ua.match(/OPR\/([\d.]+)/)   ? `Opera ${ua.match(/OPR\/([\d.]+)/)?.[1]?.split('.')[0]}` :
+    ua.match(/Chrome\/([\d.]+)/)? `Chrome ${ua.match(/Chrome\/([\d.]+)/)?.[1]?.split('.')[0]}` :
+    ua.match(/Firefox\/([\d.]+)/)? `Firefox ${ua.match(/Firefox\/([\d.]+)/)?.[1]?.split('.')[0]}` :
+    ua.match(/Safari\/([\d.]+)/) && !ua.includes('Chrome') ? `Safari ${ua.match(/Version\/([\d.]+)/)?.[1]?.split('.')[0] || ''}` :
+    null
+  const os =
+    ua.includes('Windows NT 10') ? 'Windows 10/11' :
+    ua.includes('Windows NT 6') ? 'Windows' :
+    ua.includes('Mac OS X') ? `macOS ${ua.match(/Mac OS X ([\d_]+)/)?.[1]?.replace(/_/g,'.')}` :
+    ua.includes('Android') ? `Android ${ua.match(/Android ([\d.]+)/)?.[1] || ''}` :
+    ua.includes('iPhone') ? `iPhone iOS ${ua.match(/CPU iPhone OS ([\d_]+)/)?.[1]?.replace(/_/g,'.') || ''}` :
+    ua.includes('iPad') ? `iPad iOS ${ua.match(/CPU OS ([\d_]+)/)?.[1]?.replace(/_/g,'.') || ''}` :
+    ua.includes('Linux') ? 'Linux' : null
+  if (browser) return [browser, os].filter(Boolean).join(' / ')
+  return ua.slice(0, 40) + (ua.length > 40 ? '...' : '')
+}
+
 function CopyLogButton({ log }: { log: any }) {
   const [copied, setCopied] = useState(false)
   function copy() {
@@ -88,22 +124,44 @@ export default function AdminPage() {
     if (r.ok) { const d = await r.json(); setStats(d.data) }
   }, [token])
 
-  const fetchLogs = useCallback(async () => {
+  // fetchLogs แบบ silent (ไม่ show spinner) สำหรับ realtime poll
+  const fetchLogs = useCallback(async (silent = false) => {
     if (!token) return
-    setLogsLoading(true)
+    if (!silent) setLogsLoading(true)
     const params = new URLSearchParams({ page: String(logPage), limit: '20' })
     if (logFilter.method) params.set('method', logFilter.method)
     if (logFilter.table)  params.set('table', logFilter.table)
     const r = await fetch(`${BASE_URL}/api/admin/logs?${params}`, { headers: authHeader })
     if (r.ok) {
       const d = await r.json()
-      setLogs(d.data.data || [])
-      setLogTotal(d.data.pagination?.total || 0)
+      const newLogs: any[] = d.data.data || []
+      const total: number = d.data.pagination?.total || 0
+      setLogTotal(total)
+      if (silent) {
+        // merge — prepend rows ใหม่ที่ยังไม่มีใน state (เฉพาะ page 1)
+        if (logPage === 1) {
+          setLogs(prev => {
+            const existingIds = new Set(prev.map((l: any) => l.id))
+            const fresh = newLogs.filter((l: any) => !existingIds.has(l.id))
+            return fresh.length > 0 ? [...fresh, ...prev] : prev
+          })
+        }
+      } else {
+        setLogs(newLogs)
+      }
     }
-    setLogsLoading(false)
+    if (!silent) setLogsLoading(false)
   }, [token, logPage, logFilter])
 
-  useEffect(() => { if (token) { fetchStats(); fetchLogs() } }, [token, fetchStats, fetchLogs])
+  // initial load + reload เมื่อ filter/page เปลี่ยน
+  useEffect(() => { if (token) { fetchStats(); fetchLogs(false) } }, [token, fetchStats, fetchLogs])
+
+  // realtime poll ทุก 5 วินาที เฉพาะ page 1
+  useEffect(() => {
+    if (!token) return
+    const id = setInterval(() => { fetchLogs(true); fetchStats() }, 5000)
+    return () => clearInterval(id)
+  }, [token, fetchLogs, fetchStats])
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -264,6 +322,7 @@ export default function AdminPage() {
             <h2 className="flex items-center gap-2 text-base font-semibold text-zinc-700 dark:text-zinc-300">
               <Activity className="h-4 w-4" /> บันทึกกิจกรรม
               <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-normal text-zinc-500 dark:bg-zinc-800">{logTotal} รายการ</span>
+              {logPage === 1 && <span className="flex items-center gap-1 text-xs font-normal text-emerald-500"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />Live</span>}
             </h2>
             <div className="flex flex-wrap items-center gap-2">
               <select value={logFilter.method} onChange={e => { setLogFilter(f => ({...f, method: e.target.value})); setLogPage(1) }}
@@ -276,7 +335,7 @@ export default function AdminPage() {
                 <option value="">ทุกตาราง</option>
                 {Object.keys(TABLE_LABELS).map(t => <option key={t} value={t}>{TABLE_LABELS[t]}</option>)}
               </select>
-              <button onClick={fetchLogs} className="rounded-lg border border-zinc-200 p-1.5 text-zinc-500 hover:text-zinc-900 dark:border-zinc-700 dark:hover:text-zinc-100">
+              <button onClick={() => fetchLogs(false)} className="rounded-lg border border-zinc-200 p-1.5 text-zinc-500 hover:text-zinc-900 dark:border-zinc-700 dark:hover:text-zinc-100">
                 <RefreshCw className="h-3.5 w-3.5" />
               </button>
               <button onClick={handleClearLogs} className="flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/30">
@@ -324,7 +383,7 @@ export default function AdminPage() {
                         </td>
                         <td className="hidden px-4 py-3 lg:table-cell">
                           <span className="block max-w-[180px] truncate text-xs text-zinc-400 dark:text-zinc-500" title={log.userAgent || ''}>
-                            {log.userAgent || '-'}
+                            {parseUA(log.userAgent)}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-xs text-zinc-500 whitespace-nowrap">{formatThaiTime(log.timestamp)}</td>
