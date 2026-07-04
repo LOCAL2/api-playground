@@ -16,7 +16,7 @@ function App() {
           <Route path="endpoints" element={<Navigate to="/" replace />} />
           <Route path="endpoints/:id" element={<EndpointDetailPage />} />
           {/* Admin — hidden path */}
-          <Route path="__admin__" element={<AdminPage />} />
+          <Route path="dev" element={<AdminPage />} />
           {/* 404 fallback */}
           <Route
             path="*"
