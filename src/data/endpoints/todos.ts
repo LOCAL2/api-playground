@@ -26,6 +26,24 @@ export const todoEndpoints: ApiEndpoint[] = [
     ],
   },
   {
+    id: 'todos-get-by-id',
+    name: 'Get Todo by ID',
+    description: 'ดึงข้อมูล Todo แบบละเอียดจาก ID',
+    method: 'GET',
+    baseUrl: BASE_URL,
+    path: '/api/todos/:id',
+    category: 'Todos',
+    pathParameters: [
+      { name: 'id', type: 'string', required: true, description: 'ID ของ Todo เช่น 1, 2, 3' },
+    ],
+    requiresAuth: false,
+    statusCodes: [
+      { code: 200, meaning: 'OK', description: 'คืนข้อมูล Todo' },
+      { code: 404, meaning: 'Not Found', description: 'ไม่พบ Todo' },
+    ],
+    notes: ['ตัวอย่าง: GET /api/todos/1'],
+  },
+  {
     id: 'todos-create',
     name: 'Create Todo',
     description: 'สร้าง Todo ใหม่ พร้อมกำหนด title, description, priority และ dueDate',
@@ -54,6 +72,70 @@ export const todoEndpoints: ApiEndpoint[] = [
       'priority default คือ "medium" ถ้าไม่ส่งมา',
       'completed จะเป็น false เสมอตอนสร้าง',
     ],
+  },
+  {
+    id: 'todos-update',
+    name: 'Update Todo',
+    description: 'อัปเดตข้อมูล Todo ทั้งหมด ต้องส่ง title',
+    method: 'PUT',
+    baseUrl: BASE_URL,
+    path: '/api/todos/:id',
+    category: 'Todos',
+    pathParameters: [
+      { name: 'id', type: 'string', required: true, description: 'ID ของ Todo' },
+    ],
+    requiredHeaders: [
+      { name: 'Content-Type', value: 'application/json', description: 'รูปแบบ request body' },
+    ],
+    requestBody: {
+      contentType: 'application/json',
+      fields: [
+        { name: 'title', type: 'string', required: true, description: 'ชื่องาน', example: 'ทำรายงาน' },
+        { name: 'description', type: 'string', required: false, description: 'รายละเอียด' },
+        { name: 'priority', type: 'string', required: false, description: 'low, medium, high', example: 'high' },
+        { name: 'completed', type: 'boolean', required: false, description: 'สถานะ', example: 'false' },
+        { name: 'dueDate', type: 'string', required: false, description: 'วันครบกำหนด (ISO 8601)', example: '2025-12-31' },
+      ],
+      note: 'PUT ต้องส่ง title เสมอ',
+    },
+    requiresAuth: false,
+    statusCodes: [
+      { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
+      { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title' },
+      { code: 404, meaning: 'Not Found', description: 'ไม่พบ Todo' },
+    ],
+  },
+  {
+    id: 'todos-patch',
+    name: 'Partially Update Todo',
+    description: 'อัปเดตข้อมูล Todo บางส่วน ส่งเฉพาะ field ที่ต้องการเปลี่ยน',
+    method: 'PATCH',
+    baseUrl: BASE_URL,
+    path: '/api/todos/:id',
+    category: 'Todos',
+    pathParameters: [
+      { name: 'id', type: 'string', required: true, description: 'ID ของ Todo' },
+    ],
+    requiredHeaders: [
+      { name: 'Content-Type', value: 'application/json', description: 'รูปแบบ request body' },
+    ],
+    requestBody: {
+      contentType: 'application/json',
+      fields: [
+        { name: 'title', type: 'string', required: false, description: 'ชื่องานใหม่' },
+        { name: 'description', type: 'string', required: false, description: 'รายละเอียดใหม่' },
+        { name: 'priority', type: 'string', required: false, description: 'low, medium, high', example: 'high' },
+        { name: 'completed', type: 'boolean', required: false, description: 'สถานะใหม่', example: 'true' },
+        { name: 'dueDate', type: 'string', required: false, description: 'วันครบกำหนดใหม่' },
+      ],
+      note: 'ส่งเฉพาะ field ที่ต้องการเปลี่ยน',
+    },
+    requiresAuth: false,
+    statusCodes: [
+      { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
+      { code: 404, meaning: 'Not Found', description: 'ไม่พบ Todo' },
+    ],
+    notes: ['ตัวอย่าง: PATCH /api/todos/1 → {"title": "ชื่อใหม่"}'],
   },
   {
     id: 'todos-toggle',
