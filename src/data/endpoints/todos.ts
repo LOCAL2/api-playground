@@ -58,7 +58,6 @@ export const todoEndpoints: ApiEndpoint[] = [
   {
     id: 'todos-toggle',
     name: 'Toggle Todo Status',
-    description: 'สลับสถานะ Todo ระหว่าง completed กับ incomplete ด้วย endpoint เดียว ไม่ต้องส่ง body',
     method: 'PATCH',
     baseUrl: BASE_URL,
     path: '/api/todos/:id/toggle',

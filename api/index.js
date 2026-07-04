@@ -287,11 +287,33 @@ export default async function handler(req, res) {
     return ok(res, { ...todo, completed: newVal===1 })
   }
 
-  if ((m = matchPath('/todos/:id', path)) && method === 'DELETE') {
-    const r = await db.execute({ sql: 'SELECT id FROM todos WHERE id=?', args: [m.id] })
+  if ((m = matchPath('/todos/:id', path))) {
+    const r = await db.execute({ sql: 'SELECT * FROM todos WHERE id=?', args: [m.id] })
     if (!r.rows.length) return err(res, 404, 'Todo not found')
-    await db.execute({ sql: 'DELETE FROM todos WHERE id=?', args: [m.id] })
-    return res.status(204).end()
+    const todo = toCamel(r.rows[0])
+    if (method === 'GET') return ok(res, { ...todo, completed: todo.completed===1||todo.completed===true })
+    if (method === 'PUT') {
+      const { title, description, priority, dueDate, completed } = req.body || {}
+      if (!title?.trim()) return err(res, 400, 'title is required')
+      await db.execute({ sql: 'UPDATE todos SET title=?,description=?,priority=?,completed=?,due_date=? WHERE id=?', args: [title.trim(), description??todo.description, priority??todo.priority, completed!==undefined?(completed?1:0):todo.completed, dueDate??todo.dueDate, m.id] })
+      const updated = toCamel((await db.execute({ sql: 'SELECT * FROM todos WHERE id=?', args: [m.id] })).rows[0])
+      return ok(res, { ...updated, completed: updated.completed===1||updated.completed===true })
+    }
+    if (method === 'PATCH') {
+      const setCols = []; const args = []
+      if (req.body?.title       !== undefined) { setCols.push('title=?');       args.push(req.body.title.trim()) }
+      if (req.body?.description !== undefined) { setCols.push('description=?'); args.push(req.body.description) }
+      if (req.body?.priority    !== undefined) { setCols.push('priority=?');    args.push(req.body.priority) }
+      if (req.body?.completed   !== undefined) { setCols.push('completed=?');   args.push(req.body.completed?1:0) }
+      if (req.body?.dueDate     !== undefined) { setCols.push('due_date=?');    args.push(req.body.dueDate) }
+      if (setCols.length) await db.execute({ sql: `UPDATE todos SET ${setCols.join(',')} WHERE id=?`, args: [...args, m.id] })
+      const updated = toCamel((await db.execute({ sql: 'SELECT * FROM todos WHERE id=?', args: [m.id] })).rows[0])
+      return ok(res, { ...updated, completed: updated.completed===1||updated.completed===true })
+    }
+    if (method === 'DELETE') {
+      await db.execute({ sql: 'DELETE FROM todos WHERE id=?', args: [m.id] })
+      return res.status(204).end()
+    }
   }
 
   // ── COUNTRIES ──────────────────────────────────────────────────────────
