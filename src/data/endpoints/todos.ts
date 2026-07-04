@@ -138,28 +138,6 @@ export const todoEndpoints: ApiEndpoint[] = [
     notes: ['ตัวอย่าง: PATCH /api/todos/1 → {"title": "ชื่อใหม่"}'],
   },
   {
-    id: 'todos-toggle',
-    name: 'Toggle Todo Status',
-    description: 'สลับสถานะ Todo ระหว่าง completed กับ incomplete ด้วย endpoint เดียว ไม่ต้องส่ง body',
-    method: 'PATCH',
-    baseUrl: BASE_URL,
-    path: '/api/todos/:id/toggle',
-    category: 'Todos',
-    pathParameters: [
-      { name: 'id', type: 'string', required: true, description: 'ID ของ Todo' },
-    ],
-    requiresAuth: false,
-    statusCodes: [
-      { code: 200, meaning: 'OK', description: 'คืน Todo ที่อัปเดตแล้ว โดย completed จะถูก toggle' },
-      { code: 404, meaning: 'Not Found', description: 'ไม่พบ Todo' },
-    ],
-    notes: [
-      'ตัวอย่าง: PATCH /api/todos/1/toggle',
-      'ไม่ต้องส่ง body ใดๆ',
-      'ถ้า completed เป็น false จะกลายเป็น true และในทางกลับกัน',
-    ],
-  },
-  {
     id: 'todos-delete',
     name: 'Delete Todo',
     description: 'ลบ Todo ออกจากระบบ',
