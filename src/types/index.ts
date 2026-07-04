@@ -12,10 +12,12 @@ export type ApiCategory =
   | 'Posts'
   | 'Products'
   | 'Students'
-  | 'Todos'
   | 'Movies'
   | 'Books'
   | 'Countries'
+  | 'Todos'
+  | 'Recipes'
+  | 'Animals'
 
 /** A single path parameter definition */
 export interface PathParameter {

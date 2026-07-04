@@ -5,7 +5,7 @@
 import bcrypt from 'bcryptjs'
 import {
   users, products, categories, posts, students,
-  movies, books, countries, todos,
+  movies, books, countries, todos, recipes, animals,
   refreshTokens, nextId,
 } from './_lib/db.js'
 import {
@@ -275,16 +275,6 @@ export default async function handler(req, res) {
     }
   }
 
-  // ── COMMENTS ───────────────────────────────────────────────────────────
-  if ((m = matchPath('/comments/:id', path)) && method === 'DELETE') {
-    const auth = requireAuth(req, res); if (!auth) return
-    const idx = comments.findIndex(c => c.id === m.id)
-    if (idx === -1) return err(res, 404, 'Comment not found')
-    if (auth.role !== 'admin' && comments[idx].userId !== auth.sub) return err(res, 403, 'Not the comment author or admin')
-    comments.splice(idx, 1)
-    return res.status(204).end()
-  }
-
   // ── TODOS ───────────────────────────────────────────────────────────────
   if (path === '/todos') {
     if (method === 'GET') {
@@ -316,61 +306,6 @@ export default async function handler(req, res) {
     if (idx === -1) return err(res, 404, 'Todo not found')
     todos.splice(idx, 1)
     return res.status(204).end()
-  }
-
-  // ── ORDERS ─────────────────────────────────────────────────────────────
-  if (path === '/orders') {
-    if (method === 'GET') {
-      const auth = requireAuth(req, res); if (!auth) return
-      const { page, limit, status } = query
-      let list = auth.role === 'admin' ? [...orders] : orders.filter(o => o.userId === auth.sub)
-      if (status) list = list.filter(o => o.status === status)
-      return ok(res, paginate(list, page, limit))
-    }
-    if (method === 'POST') {
-      const auth = requireAuth(req, res); if (!auth) return
-      const { items, shippingAddressId, paymentMethodId, couponCode } = req.body || {}
-      if (!items?.length || !shippingAddressId || !paymentMethodId)
-        return err(res, 400, 'items, shippingAddressId, and paymentMethodId are required')
-      let total = 0; const orderItems = []
-      for (const item of items) {
-        const prod = products.find(p => p.id === String(item.productId))
-        if (!prod) return err(res, 400, `Product ${item.productId} not found`)
-        if (prod.stock < item.quantity) return err(res, 400, `Insufficient stock for ${prod.name}`)
-        total += prod.price * item.quantity
-        orderItems.push({ productId: String(item.productId), quantity: item.quantity, price: prod.price })
-      }
-      if (couponCode === 'SAVE10') total = total * 0.9
-      for (const item of orderItems) { const p = products.find(pr => pr.id === item.productId); if (p) p.stock -= item.quantity }
-      const no = { id: nextId(orders), userId: auth.sub, items: orderItems, total: Math.round(total*100)/100,
-        status: 'pending', trackingNumber: null, shippingAddressId, paymentMethodId, createdAt: new Date().toISOString() }
-      orders.push(no)
-      return ok(res, no, 201)
-    }
-  }
-
-  if ((m = matchPath('/orders/:id/status', path)) && method === 'PATCH') {
-    const admin = requireAdmin(req, res); if (!admin) return
-    const idx = orders.findIndex(o => o.id === m.id)
-    if (idx === -1) return err(res, 404, 'Order not found')
-    const validStatuses = ['processing', 'shipped', 'delivered', 'cancelled']
-    const { status, trackingNumber } = req.body || {}
-    if (!status || !validStatuses.includes(status)) return err(res, 400, `status must be one of: ${validStatuses.join(', ')}`)
-    orders[idx] = { ...orders[idx], status, ...(trackingNumber && { trackingNumber }) }
-    return ok(res, orders[idx])
-  }
-
-  if ((m = matchPath('/orders/:id', path))) {
-    const idx = orders.findIndex(o => o.id === m.id)
-    if (idx === -1) return err(res, 404, 'Order not found')
-    const auth = requireAuth(req, res); if (!auth) return
-    if (auth.role !== 'admin' && orders[idx].userId !== auth.sub) return err(res, 403, 'Cannot access another user\'s order')
-    if (method === 'GET') return ok(res, orders[idx])
-    if (method === 'DELETE') {
-      if (!['pending', 'processing'].includes(orders[idx].status)) return err(res, 400, 'Only pending or processing orders can be cancelled')
-      orders[idx] = { ...orders[idx], status: 'cancelled' }
-      return ok(res, { message: 'Order cancelled' })
-    }
   }
 
   // ── COUNTRIES ──────────────────────────────────────────────────────────
@@ -425,20 +360,6 @@ export default async function handler(req, res) {
   }
 
   // ── SPORTS ─────────────────────────────────────────────────────────────
-  if (path === '/sports/teams') {
-    const { sport, country, league } = query
-    let list = [...teams]
-    if (sport)   list = list.filter(t => t.sport.toLowerCase() === sport.toLowerCase())
-    if (country) list = list.filter(t => t.country.toUpperCase() === country.toUpperCase())
-    if (league)  list = list.filter(t => t.league.toLowerCase().includes(league.toLowerCase()))
-    return ok(res, { data: list, total: list.length })
-  }
-  if ((m = matchPath('/sports/players/:id', path))) {
-    const player = players.find(p => p.id === m.id)
-    if (!player) return err(res, 404, 'Player not found')
-    return ok(res, player)
-  }
-
   // ── MOVIES ─────────────────────────────────────────────────────────────
   if (path === '/movies') {
     if (method === 'GET') {
@@ -548,39 +469,118 @@ export default async function handler(req, res) {
   }
 
   // ── DASHBOARD ──────────────────────────────────────────────────────────
-  if (path === '/dashboard/stats') {
-    const admin = requireAdmin(req, res); if (!admin) return
-    const { period = 'month' } = query
-    const totalRevenue = orders.reduce((s, o) => s + (o.status !== 'cancelled' ? o.total : 0), 0)
-    return ok(res, {
-      period,
-      users: { total: users.length, admins: users.filter(u => u.role === 'admin').length },
-      products: { total: products.length, outOfStock: products.filter(p => p.stock === 0).length },
-      orders: { total: orders.length,
-        byStatus: { pending: orders.filter(o=>o.status==='pending').length, processing: orders.filter(o=>o.status==='processing').length,
-          shipped: orders.filter(o=>o.status==='shipped').length, delivered: orders.filter(o=>o.status==='delivered').length, cancelled: orders.filter(o=>o.status==='cancelled').length },
-        totalRevenue: Math.round(totalRevenue * 100) / 100 },
-      posts: { total: posts.length, published: posts.filter(p=>p.status==='published').length, draft: posts.filter(p=>p.status==='draft').length },
-      generatedAt: new Date().toISOString(),
-    })
+  // ── RECIPES ────────────────────────────────────────────────────────────
+  if (path === '/recipes') {
+    if (method === 'GET') {
+      const { page, limit, category, difficulty, search, maxCalories } = query
+      let list = [...recipes]
+      if (category)    list = list.filter(r => r.category.toLowerCase() === category.toLowerCase())
+      if (difficulty)  list = list.filter(r => r.difficulty === difficulty)
+      if (maxCalories) list = list.filter(r => r.calories <= Number(maxCalories))
+      if (search)      list = list.filter(r => r.title.toLowerCase().includes(search.toLowerCase()) || r.description.toLowerCase().includes(search.toLowerCase()))
+      return ok(res, paginate(list, page, limit))
+    }
+    if (method === 'POST') {
+      const { title, description, ingredients, steps, category, prepTime, cookTime, servings, difficulty, calories, tags } = req.body || {}
+      if (!title) return err(res, 400, 'title is required')
+      const newId = nextId(recipes)
+      const nr = { id: newId, title, description: description || '', ingredients: ingredients || [],
+        steps: steps || [], category: category || 'Other', prepTime: prepTime || 0, cookTime: cookTime || 0,
+        servings: servings || 1, difficulty: difficulty || 'easy', calories: calories || 0,
+        tags: tags || [], image: `https://picsum.photos/seed/recipe${newId}/600/400`, createdAt: new Date().toISOString() }
+      recipes.push(nr)
+      return ok(res, nr, 201)
+    }
+  }
+  if ((m = matchPath('/recipes/:id', path))) {
+    const idx = recipes.findIndex(r => r.id === m.id)
+    if (method === 'GET') {
+      if (idx === -1) return err(res, 404, 'Recipe not found')
+      return ok(res, recipes[idx])
+    }
+    if (method === 'PUT') {
+      if (idx === -1) return err(res, 404, 'Recipe not found')
+      const { title, description, ingredients, steps, category, prepTime, cookTime, servings, difficulty, calories, tags } = req.body || {}
+      if (!title) return err(res, 400, 'title is required')
+      recipes[idx] = { ...recipes[idx], title, description: description ?? recipes[idx].description,
+        ingredients: ingredients ?? recipes[idx].ingredients, steps: steps ?? recipes[idx].steps,
+        category: category ?? recipes[idx].category, prepTime: prepTime ?? recipes[idx].prepTime,
+        cookTime: cookTime ?? recipes[idx].cookTime, servings: servings ?? recipes[idx].servings,
+        difficulty: difficulty ?? recipes[idx].difficulty, calories: calories ?? recipes[idx].calories,
+        tags: tags ?? recipes[idx].tags }
+      return ok(res, recipes[idx])
+    }
+    if (method === 'PATCH') {
+      if (idx === -1) return err(res, 404, 'Recipe not found')
+      const allowed = ['title','description','ingredients','steps','category','prepTime','cookTime','servings','difficulty','calories','tags']
+      const updates = {}
+      for (const key of allowed) { if (req.body?.[key] !== undefined) updates[key] = req.body[key] }
+      recipes[idx] = { ...recipes[idx], ...updates }
+      return ok(res, recipes[idx])
+    }
+    if (method === 'DELETE') {
+      if (idx === -1) return err(res, 404, 'Recipe not found')
+      recipes.splice(idx, 1)
+      return res.status(204).end()
+    }
   }
 
-  if (path === '/dashboard/revenue') {
-    const admin = requireAdmin(req, res); if (!admin) return
-    const { from, to, groupBy = 'month' } = query
-    if (!from || !to) return err(res, 400, 'from and to query parameters are required')
-    const fromDate = new Date(from), toDate = new Date(to)
-    if (isNaN(fromDate) || isNaN(toDate)) return err(res, 400, 'Invalid date format. Use ISO 8601 (YYYY-MM-DD)')
-    if (fromDate > toDate) return err(res, 400, 'from must be before to')
-    const filtered = orders.filter(o => { const d = new Date(o.createdAt); return d >= fromDate && d <= toDate && o.status !== 'cancelled' })
-    const grouped = {}
-    for (const order of filtered) {
-      const d = new Date(order.createdAt)
-      const key = groupBy === 'day' ? d.toISOString().slice(0,10) : groupBy === 'week' ? `${d.getFullYear()}-W${String(Math.ceil(d.getDate()/7)).padStart(2,'0')}` : d.toISOString().slice(0,7)
-      grouped[key] = (grouped[key]||0) + order.total
+  // ── ANIMALS ────────────────────────────────────────────────────────────
+  if (path === '/animals') {
+    if (method === 'GET') {
+      const { page, limit, category, habitat, diet, conservationStatus, search } = query
+      let list = [...animals]
+      if (category)           list = list.filter(a => a.category.toLowerCase() === category.toLowerCase())
+      if (habitat)            list = list.filter(a => a.habitat.toLowerCase() === habitat.toLowerCase())
+      if (diet)               list = list.filter(a => a.diet.toLowerCase() === diet.toLowerCase())
+      if (conservationStatus) list = list.filter(a => a.conservationStatus.toLowerCase() === conservationStatus.toLowerCase())
+      if (search)             list = list.filter(a => a.name.toLowerCase().includes(search.toLowerCase()) || a.scientificName.toLowerCase().includes(search.toLowerCase()))
+      return ok(res, paginate(list, page, limit))
     }
-    const data = Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b)).map(([period,revenue])=>({ period, revenue: Math.round(revenue*100)/100 }))
-    return ok(res, { data, from, to, groupBy, totalRevenue: data.reduce((s,d)=>s+d.revenue,0) })
+    if (method === 'POST') {
+      const { name, scientificName, category, habitat, diet, lifespan, weight, length: len, conservationStatus, description } = req.body || {}
+      if (!name) return err(res, 400, 'name is required')
+      const newId = nextId(animals)
+      const na = { id: newId, name, scientificName: scientificName || '', category: category || 'Mammal',
+        habitat: habitat || '', diet: diet || 'Omnivore', lifespan: lifespan || null, weight: weight || '',
+        length: len || '', conservationStatus: conservationStatus || 'Least Concern',
+        description: description || '', image: `https://picsum.photos/seed/animal${newId}/600/400`,
+        createdAt: new Date().toISOString() }
+      animals.push(na)
+      return ok(res, na, 201)
+    }
+  }
+  if ((m = matchPath('/animals/:id', path))) {
+    const idx = animals.findIndex(a => a.id === m.id)
+    if (method === 'GET') {
+      if (idx === -1) return err(res, 404, 'Animal not found')
+      return ok(res, animals[idx])
+    }
+    if (method === 'PUT') {
+      if (idx === -1) return err(res, 404, 'Animal not found')
+      const { name, scientificName, category, habitat, diet, lifespan, weight, length: len, conservationStatus, description } = req.body || {}
+      if (!name) return err(res, 400, 'name is required')
+      animals[idx] = { ...animals[idx], name, scientificName: scientificName ?? animals[idx].scientificName,
+        category: category ?? animals[idx].category, habitat: habitat ?? animals[idx].habitat,
+        diet: diet ?? animals[idx].diet, lifespan: lifespan ?? animals[idx].lifespan,
+        weight: weight ?? animals[idx].weight, length: len ?? animals[idx].length,
+        conservationStatus: conservationStatus ?? animals[idx].conservationStatus,
+        description: description ?? animals[idx].description }
+      return ok(res, animals[idx])
+    }
+    if (method === 'PATCH') {
+      if (idx === -1) return err(res, 404, 'Animal not found')
+      const allowed = ['name','scientificName','category','habitat','diet','lifespan','weight','length','conservationStatus','description']
+      const updates = {}
+      for (const key of allowed) { if (req.body?.[key] !== undefined) updates[key] = req.body[key] }
+      animals[idx] = { ...animals[idx], ...updates }
+      return ok(res, animals[idx])
+    }
+    if (method === 'DELETE') {
+      if (idx === -1) return err(res, 404, 'Animal not found')
+      animals.splice(idx, 1)
+      return res.status(204).end()
+    }
   }
 
   // ── STUDENTS ───────────────────────────────────────────────────────────

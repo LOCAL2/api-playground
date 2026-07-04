@@ -1,7 +1,12 @@
-/**
+﻿/**
  * Script to generate seed data for db.js
  * Run: node scripts/gen-db.js
  * Output: api/_lib/db.js
+ *
+ * Collections:
+ *   users (50), products (250), posts (200), movies (250),
+ *   books (250), countries (50), students (preserved),
+ *   recipes (100), animals (100)
  */
 
 import { readFileSync, writeFileSync } from 'fs'
@@ -592,6 +597,276 @@ const countries = countriesData.slice(0, 50).map((c, i) => ({
 }))
 
 
+
+
+// ── RECIPES (100) ──────────────────────────────────────────────────────────
+const recipeData = [
+  // Thai
+  { title: 'ผัดกะเพรา', category: 'Thai', description: 'Stir-fried basil with minced meat, Thai chilies, and garlic — Thailand\'s most beloved everyday dish.', prepTime: 10, cookTime: 10, servings: 2, difficulty: 'easy', calories: 420, tags: ['stir-fry','basil','spicy','quick'] },
+  { title: 'ต้มยำกุ้ง', category: 'Thai', description: 'Spicy and sour Thai prawn soup with lemongrass, galangal, kaffir lime leaves, and chili.', prepTime: 15, cookTime: 20, servings: 4, difficulty: 'medium', calories: 180, tags: ['soup','spicy','seafood','sour'] },
+  { title: 'ข้าวผัด', category: 'Thai', description: 'Classic Thai fried rice with eggs, vegetables, and your choice of protein, seasoned with soy sauce.', prepTime: 10, cookTime: 15, servings: 2, difficulty: 'easy', calories: 380, tags: ['rice','stir-fry','quick','egg'] },
+  { title: 'แกงเขียวหวาน', category: 'Thai', description: 'Fragrant green curry with coconut milk, Thai eggplant, bamboo shoots, and fresh basil.', prepTime: 20, cookTime: 25, servings: 4, difficulty: 'medium', calories: 350, tags: ['curry','coconut','spicy','aromatic'] },
+  { title: 'ส้มตำ', category: 'Thai', description: 'Spicy green papaya salad with tomatoes, green beans, peanuts, and dried shrimp, pounded in a mortar.', prepTime: 15, cookTime: 0, servings: 2, difficulty: 'easy', calories: 150, tags: ['salad','spicy','fresh','sour'] },
+  { title: 'ผัดไทย', category: 'Thai', description: 'Classic Thai stir-fried rice noodles with shrimp or tofu, bean sprouts, eggs, and tamarind sauce.', prepTime: 20, cookTime: 15, servings: 2, difficulty: 'medium', calories: 450, tags: ['noodles','stir-fry','famous','sweet'] },
+  { title: 'มะม่วงข้าวเหนียว', category: 'Thai', description: 'Sweet sticky rice served with fresh mango slices and coconut cream — a beloved Thai dessert.', prepTime: 30, cookTime: 20, servings: 4, difficulty: 'easy', calories: 320, tags: ['dessert','sweet','mango','sticky-rice'] },
+  { title: 'ต้มข่าไก่', category: 'Thai', description: 'Creamy coconut milk soup with galangal, lemongrass, kaffir lime, and tender chicken.', prepTime: 15, cookTime: 20, servings: 4, difficulty: 'easy', calories: 280, tags: ['soup','coconut','chicken','mild'] },
+  { title: 'แกงมัสมั่น', category: 'Thai', description: 'Rich, mildly spiced Massaman curry with potatoes, peanuts, and slow-cooked beef in coconut milk.', prepTime: 20, cookTime: 60, servings: 4, difficulty: 'medium', calories: 480, tags: ['curry','rich','peanut','slow-cook'] },
+  { title: 'ยำวุ้นเส้น', category: 'Thai', description: 'Spicy glass noodle salad with minced pork, shrimp, onions, and a tangy lime dressing.', prepTime: 15, cookTime: 10, servings: 2, difficulty: 'easy', calories: 200, tags: ['salad','spicy','noodles','glass-noodle'] },
+  { title: 'ข้าวมันไก่', category: 'Thai', description: 'Poached chicken over fragrant rice cooked in chicken broth, served with ginger-garlic sauce.', prepTime: 15, cookTime: 45, servings: 4, difficulty: 'medium', calories: 420, tags: ['rice','chicken','mild','comforting'] },
+  { title: 'หมูกรอบ', category: 'Thai', description: 'Crispy roasted pork belly with perfectly crackled skin, served with chili dipping sauce.', prepTime: 20, cookTime: 90, servings: 4, difficulty: 'hard', calories: 580, tags: ['pork','crispy','roasted','popular'] },
+  { title: 'ลาบหมู', category: 'Thai', description: 'Spicy minced pork salad with roasted rice powder, mint, shallots, and lime from Isan cuisine.', prepTime: 15, cookTime: 10, servings: 2, difficulty: 'medium', calories: 260, tags: ['salad','spicy','Isan','herb'] },
+  { title: 'น้ำตกเนื้อ', category: 'Thai', description: 'Grilled beef "waterfall" salad seasoned with toasted rice, herbs, fish sauce, and lime juice.', prepTime: 20, cookTime: 15, servings: 2, difficulty: 'medium', calories: 290, tags: ['salad','beef','grilled','Isan'] },
+  { title: 'ข้าวหน้าเป็ด', category: 'Thai', description: 'Sliced five-spice braised duck served over steamed rice with a savory brown sauce.', prepTime: 15, cookTime: 120, servings: 4, difficulty: 'hard', calories: 500, tags: ['rice','duck','braised','five-spice'] },
+  { title: 'กะเพราไข่ดาว', category: 'Thai', description: 'Spicy basil stir-fry topped with a sunny-side-up fried egg — the quintessential Thai street food.', prepTime: 5, cookTime: 10, servings: 1, difficulty: 'easy', calories: 380, tags: ['street-food','egg','basil','spicy'] },
+  { title: 'แกงส้ม', category: 'Thai', description: 'Tangy and spicy Southern Thai sour curry with vegetables and your choice of fish or shrimp.', prepTime: 20, cookTime: 25, servings: 4, difficulty: 'medium', calories: 200, tags: ['curry','sour','spicy','Southern'] },
+  { title: 'หมูสะเต๊ะ', category: 'Thai', description: 'Marinated pork skewers grilled over charcoal, served with rich peanut sauce and cucumber relish.', prepTime: 30, cookTime: 15, servings: 4, difficulty: 'medium', calories: 320, tags: ['grilled','skewer','peanut','BBQ'] },
+  { title: 'ปลาราดพริก', category: 'Thai', description: 'Deep-fried whole fish topped with a vibrant sweet-spicy garlic chili sauce.', prepTime: 15, cookTime: 20, servings: 2, difficulty: 'medium', calories: 380, tags: ['fish','spicy','fried','sauce'] },
+  { title: 'ไก่ย่าง', category: 'Thai', description: 'Marinated grilled chicken with lemongrass, galangal, and turmeric, served with sticky rice.', prepTime: 240, cookTime: 30, servings: 4, difficulty: 'medium', calories: 350, tags: ['chicken','grilled','Isan','aromatic'] },
+  // Italian
+  { title: 'Spaghetti Carbonara', category: 'Italian', description: 'Classic Roman pasta with egg, Pecorino Romano, guanciale, and black pepper — no cream needed.', prepTime: 10, cookTime: 20, servings: 4, difficulty: 'medium', calories: 520, tags: ['pasta','classic','egg','Roman'] },
+  { title: 'Margherita Pizza', category: 'Italian', description: 'Neapolitan pizza with San Marzano tomato sauce, fresh mozzarella, and basil on a thin crust.', prepTime: 90, cookTime: 12, servings: 4, difficulty: 'medium', calories: 480, tags: ['pizza','classic','vegetarian','Neapolitan'] },
+  { title: 'Risotto', category: 'Italian', description: 'Creamy Arborio rice slow-cooked with white wine, Parmesan, and butter — a Northern Italian staple.', prepTime: 10, cookTime: 30, servings: 4, difficulty: 'medium', calories: 430, tags: ['rice','creamy','Parmesan','Italian'] },
+  { title: 'Lasagna', category: 'Italian', description: 'Layered pasta with Bolognese meat sauce, béchamel, and Parmesan, baked until golden.', prepTime: 40, cookTime: 60, servings: 8, difficulty: 'hard', calories: 580, tags: ['pasta','baked','hearty','classic'] },
+  { title: 'Tiramisu', category: 'Italian', description: 'Italian no-bake dessert with espresso-soaked ladyfingers and mascarpone cream dusted with cocoa.', prepTime: 30, cookTime: 0, servings: 8, difficulty: 'medium', calories: 380, tags: ['dessert','coffee','no-bake','Italian'] },
+  { title: 'Bruschetta', category: 'Italian', description: 'Toasted bread rubbed with garlic and topped with fresh tomatoes, basil, and olive oil.', prepTime: 10, cookTime: 5, servings: 4, difficulty: 'easy', calories: 180, tags: ['appetizer','tomato','bread','quick'] },
+  { title: 'Fettuccine Alfredo', category: 'Italian', description: 'Silky fettuccine pasta tossed in a rich sauce of butter and Parmesan cheese.', prepTime: 5, cookTime: 20, servings: 4, difficulty: 'easy', calories: 560, tags: ['pasta','creamy','butter','Parmesan'] },
+  { title: 'Osso Buco', category: 'Italian', description: 'Braised veal shanks in white wine, broth, and gremolata — a Milanese classic.', prepTime: 20, cookTime: 120, servings: 4, difficulty: 'hard', calories: 490, tags: ['braised','veal','Milan','slow-cook'] },
+  { title: 'Minestrone', category: 'Italian', description: 'Hearty Italian vegetable soup with beans, pasta, and seasonal vegetables in tomato broth.', prepTime: 20, cookTime: 40, servings: 6, difficulty: 'easy', calories: 220, tags: ['soup','vegetable','hearty','healthy'] },
+  { title: 'Panna Cotta', category: 'Italian', description: 'Silky Italian cooked cream dessert served with berry coulis or caramel sauce.', prepTime: 15, cookTime: 10, servings: 6, difficulty: 'easy', calories: 280, tags: ['dessert','creamy','elegant','Italian'] },
+  // Japanese
+  { title: 'Sushi', category: 'Japanese', description: 'Vinegared rice topped with fresh raw fish and seafood — the iconic Japanese delicacy.', prepTime: 60, cookTime: 20, servings: 4, difficulty: 'hard', calories: 320, tags: ['seafood','rice','fresh','Japanese'] },
+  { title: 'Ramen', category: 'Japanese', description: 'Rich broth noodle soup with chashu pork, soft-boiled egg, nori, and bamboo shoots.', prepTime: 30, cookTime: 180, servings: 4, difficulty: 'hard', calories: 520, tags: ['noodles','soup','pork','Japanese'] },
+  { title: 'Tempura', category: 'Japanese', description: 'Light, crispy battered and deep-fried shrimp and vegetables served with tentsuyu dipping sauce.', prepTime: 20, cookTime: 20, servings: 4, difficulty: 'medium', calories: 350, tags: ['fried','seafood','light','crispy'] },
+  { title: 'Tonkatsu', category: 'Japanese', description: 'Breaded and deep-fried pork cutlet served with shredded cabbage and tonkatsu sauce.', prepTime: 15, cookTime: 15, servings: 2, difficulty: 'medium', calories: 580, tags: ['pork','fried','breaded','Japanese'] },
+  { title: 'Miso Soup', category: 'Japanese', description: 'Traditional Japanese soup with fermented miso paste, tofu, wakame seaweed, and green onion.', prepTime: 5, cookTime: 10, servings: 4, difficulty: 'easy', calories: 80, tags: ['soup','light','tofu','daily'] },
+  { title: 'Takoyaki', category: 'Japanese', description: 'Savory octopus-filled round balls made in a special pan, topped with bonito flakes and mayo.', prepTime: 20, cookTime: 15, servings: 4, difficulty: 'medium', calories: 290, tags: ['octopus','street-food','savory','Japanese'] },
+  { title: 'Gyoza', category: 'Japanese', description: 'Pan-fried dumplings filled with pork and cabbage, crispy on the bottom and juicy inside.', prepTime: 30, cookTime: 15, servings: 4, difficulty: 'medium', calories: 300, tags: ['dumpling','pork','pan-fried','Japanese'] },
+  { title: 'Yakitori', category: 'Japanese', description: 'Grilled chicken skewers glazed with sweet-savory tare sauce, popular at Japanese izakayas.', prepTime: 20, cookTime: 15, servings: 4, difficulty: 'easy', calories: 250, tags: ['chicken','grilled','skewer','izakaya'] },
+  { title: 'Okonomiyaki', category: 'Japanese', description: 'Japanese savory pancake with cabbage, batter, and various toppings, cooked on a griddle.', prepTime: 15, cookTime: 15, servings: 2, difficulty: 'medium', calories: 380, tags: ['pancake','savory','cabbage','Japanese'] },
+  { title: 'Udon', category: 'Japanese', description: 'Thick wheat noodles in a mild dashi broth garnished with green onions and tempura.', prepTime: 10, cookTime: 15, servings: 2, difficulty: 'easy', calories: 380, tags: ['noodles','soup','mild','Japanese'] },
+  // American
+  { title: 'Pancakes', category: 'American', description: 'Fluffy buttermilk pancakes served with maple syrup, butter, and fresh berries for a classic American breakfast.', prepTime: 10, cookTime: 20, servings: 4, difficulty: 'easy', calories: 420, tags: ['breakfast','sweet','fluffy','brunch'] },
+  { title: 'Burger', category: 'American', description: 'Juicy beef patty in a brioche bun with lettuce, tomato, pickles, onion, and special sauce.', prepTime: 15, cookTime: 15, servings: 4, difficulty: 'easy', calories: 650, tags: ['beef','sandwich','classic','American'] },
+  { title: 'Mac and Cheese', category: 'American', description: 'Creamy baked macaroni smothered in a rich cheddar cheese sauce with a breadcrumb topping.', prepTime: 15, cookTime: 30, servings: 6, difficulty: 'easy', calories: 520, tags: ['pasta','cheese','comfort','baked'] },
+  { title: 'BBQ Ribs', category: 'American', description: 'Slow-cooked pork ribs slathered in tangy BBQ sauce, tender enough to fall off the bone.', prepTime: 20, cookTime: 180, servings: 4, difficulty: 'hard', calories: 680, tags: ['pork','BBQ','slow-cook','smoky'] },
+  { title: 'Cheesecake', category: 'American', description: 'Rich New York-style cheesecake with a graham cracker crust and silky cream cheese filling.', prepTime: 30, cookTime: 60, servings: 12, difficulty: 'hard', calories: 420, tags: ['dessert','creamy','baked','New-York'] },
+  { title: 'Buffalo Wings', category: 'American', description: 'Crispy chicken wings tossed in spicy Buffalo sauce, served with celery sticks and blue cheese dip.', prepTime: 15, cookTime: 40, servings: 4, difficulty: 'medium', calories: 450, tags: ['chicken','spicy','appetizer','game-day'] },
+  { title: 'Clam Chowder', category: 'American', description: 'New England-style creamy soup with clams, potatoes, onion, and bacon in a thick cream base.', prepTime: 20, cookTime: 40, servings: 6, difficulty: 'medium', calories: 380, tags: ['soup','seafood','creamy','New-England'] },
+  { title: 'Grilled Cheese', category: 'American', description: 'Golden, crispy toasted sandwich with melted American and cheddar cheese — the ultimate comfort food.', prepTime: 5, cookTime: 10, servings: 2, difficulty: 'easy', calories: 380, tags: ['sandwich','cheese','quick','comfort'] },
+  // Mexican
+  { title: 'Tacos', category: 'Mexican', description: 'Soft corn tortillas filled with seasoned carne asada, onion, cilantro, and salsa verde.', prepTime: 20, cookTime: 20, servings: 4, difficulty: 'easy', calories: 380, tags: ['tortilla','meat','Mexican','street-food'] },
+  { title: 'Guacamole', category: 'Mexican', description: 'Fresh avocado mashed with lime, cilantro, onion, tomato, and jalapeño — ready in minutes.', prepTime: 10, cookTime: 0, servings: 6, difficulty: 'easy', calories: 180, tags: ['avocado','dip','fresh','quick'] },
+  { title: 'Enchiladas', category: 'Mexican', description: 'Rolled tortillas stuffed with chicken or beef, smothered in red chili sauce and melted cheese.', prepTime: 30, cookTime: 30, servings: 4, difficulty: 'medium', calories: 480, tags: ['tortilla','baked','cheese','Mexican'] },
+  { title: 'Tamales', category: 'Mexican', description: 'Traditional masa dough stuffed with pork or chicken in red salsa, steamed in corn husks.', prepTime: 90, cookTime: 90, servings: 12, difficulty: 'hard', calories: 320, tags: ['traditional','steamed','masa','festive'] },
+  { title: 'Churros', category: 'Mexican', description: 'Fried dough pastry rolled in cinnamon sugar, served with warm chocolate dipping sauce.', prepTime: 20, cookTime: 20, servings: 8, difficulty: 'medium', calories: 320, tags: ['dessert','fried','sweet','cinnamon'] },
+  // Chinese
+  { title: 'Kung Pao Chicken', category: 'Chinese', description: 'Spicy stir-fried chicken with peanuts, vegetables, and dried chilies in a savory-sweet sauce.', prepTime: 20, cookTime: 15, servings: 4, difficulty: 'medium', calories: 380, tags: ['spicy','stir-fry','peanut','Sichuan'] },
+  { title: 'Dim Sum', category: 'Chinese', description: 'Assorted bite-sized dishes of steamed dumplings, rolls, and buns served in bamboo steamers.', prepTime: 60, cookTime: 30, servings: 6, difficulty: 'hard', calories: 340, tags: ['dumplings','steamed','brunch','Cantonese'] },
+  { title: 'Fried Rice', category: 'Chinese', description: 'Wok-tossed day-old rice with eggs, vegetables, soy sauce, and sesame oil — a takeout classic.', prepTime: 10, cookTime: 10, servings: 4, difficulty: 'easy', calories: 360, tags: ['rice','quick','wok','Chinese'] },
+  { title: 'Sweet and Sour Pork', category: 'Chinese', description: 'Crispy battered pork in a vibrant sweet-sour sauce with bell peppers and pineapple.', prepTime: 30, cookTime: 20, servings: 4, difficulty: 'medium', calories: 480, tags: ['pork','sweet','sour','Cantonese'] },
+  { title: 'Dumplings', category: 'Chinese', description: 'Handmade dough pockets filled with pork and cabbage, boiled or pan-fried and served with soy-vinegar dip.', prepTime: 60, cookTime: 15, servings: 6, difficulty: 'medium', calories: 320, tags: ['dumplings','pork','boiled','pan-fried'] },
+  // Indian
+  { title: 'Butter Chicken', category: 'Indian', description: 'Tender chicken in a rich, mildly spiced tomato-cream sauce — India\'s most popular curry worldwide.', prepTime: 20, cookTime: 40, servings: 4, difficulty: 'medium', calories: 450, tags: ['curry','creamy','chicken','popular'] },
+  { title: 'Biryani', category: 'Indian', description: 'Fragrant basmati rice layered with spiced meat or vegetables, saffron, and fried onions.', prepTime: 30, cookTime: 60, servings: 6, difficulty: 'hard', calories: 560, tags: ['rice','aromatic','spiced','festive'] },
+  { title: 'Naan', category: 'Indian', description: 'Soft leavened flatbread baked in a tandoor oven, brushed with butter and garlic.', prepTime: 90, cookTime: 10, servings: 6, difficulty: 'medium', calories: 260, tags: ['bread','tandoor','flatbread','Indian'] },
+  { title: 'Curry', category: 'Indian', description: 'A warming blend of spices simmered with vegetables or meat in a fragrant tomato-onion gravy.', prepTime: 15, cookTime: 40, servings: 4, difficulty: 'medium', calories: 380, tags: ['spiced','vegetable','sauce','Indian'] },
+  { title: 'Samosa', category: 'Indian', description: 'Crispy fried pastry pockets stuffed with spiced potatoes and peas, served with chutney.', prepTime: 40, cookTime: 20, servings: 8, difficulty: 'medium', calories: 200, tags: ['appetizer','fried','snack','Indian'] },
+  // French
+  { title: 'Croissant', category: 'French', description: 'Buttery, flaky laminated pastry with a golden crust — the symbol of French bakeries.', prepTime: 240, cookTime: 20, servings: 8, difficulty: 'hard', calories: 280, tags: ['pastry','butter','breakfast','French'] },
+  { title: 'Crème Brûlée', category: 'French', description: 'Rich vanilla custard with a perfectly caramelized sugar crust cracked with a spoon.', prepTime: 20, cookTime: 50, servings: 6, difficulty: 'medium', calories: 340, tags: ['dessert','custard','caramel','elegant'] },
+  { title: 'Quiche', category: 'French', description: 'Savory open-faced tart with a buttery pastry shell filled with eggs, cream, Gruyère, and lardons.', prepTime: 30, cookTime: 45, servings: 8, difficulty: 'medium', calories: 380, tags: ['tart','egg','baked','brunch'] },
+  { title: 'Ratatouille', category: 'French', description: 'Provençal baked vegetable dish with eggplant, zucchini, tomatoes, and bell peppers in herbed oil.', prepTime: 30, cookTime: 60, servings: 6, difficulty: 'medium', calories: 160, tags: ['vegetarian','vegetable','Provence','healthy'] },
+  { title: 'Boeuf Bourguignon', category: 'French', description: 'Classic Burgundy beef stew braised in red wine with mushrooms, pearl onions, and bacon.', prepTime: 30, cookTime: 180, servings: 6, difficulty: 'hard', calories: 520, tags: ['beef','stew','red-wine','slow-cook'] },
+  // Additional recipes to reach 100
+  { title: 'Pad See Ew', category: 'Thai', description: 'Stir-fried wide rice noodles with Chinese broccoli, egg, and sweet soy sauce.', prepTime: 10, cookTime: 10, servings: 2, difficulty: 'easy', calories: 420, tags: ['noodles','stir-fry','Thai','quick'] },
+  { title: 'Khao Pad Sapparod', category: 'Thai', description: 'Thai pineapple fried rice with cashews, raisins, and curry powder served in a pineapple shell.', prepTime: 15, cookTime: 15, servings: 2, difficulty: 'easy', calories: 400, tags: ['rice','sweet','pineapple','Thai'] },
+  { title: 'Tom Saap', category: 'Thai', description: 'Spicy Isan-style pork rib soup with lemongrass, galangal, and a sour punch of lime.', prepTime: 10, cookTime: 60, servings: 4, difficulty: 'medium', calories: 220, tags: ['soup','spicy','Isan','pork'] },
+  { title: 'Pad Pak Ruam', category: 'Thai', description: 'Quick Thai stir-fried mixed vegetables with oyster sauce and garlic — a healthy everyday side.', prepTime: 10, cookTime: 8, servings: 2, difficulty: 'easy', calories: 120, tags: ['vegetable','stir-fry','healthy','quick'] },
+  { title: 'Gai Pad Med Mamuang', category: 'Thai', description: 'Stir-fried chicken with crunchy cashew nuts, dried chilies, and onion in oyster sauce.', prepTime: 15, cookTime: 12, servings: 2, difficulty: 'easy', calories: 390, tags: ['chicken','cashew','stir-fry','Thai'] },
+  { title: 'Penne Arrabbiata', category: 'Italian', description: 'Penne pasta in a fiery garlic and tomato sauce — simple, quick, and full of flavour.', prepTime: 5, cookTime: 20, servings: 4, difficulty: 'easy', calories: 380, tags: ['pasta','spicy','tomato','quick'] },
+  { title: 'Gnocchi al Pesto', category: 'Italian', description: 'Soft potato gnocchi tossed in fresh basil pesto with pine nuts and Parmesan.', prepTime: 60, cookTime: 10, servings: 4, difficulty: 'medium', calories: 440, tags: ['pasta','pesto','basil','Italian'] },
+  { title: 'Saltimbocca', category: 'Italian', description: 'Tender veal cutlets wrapped in prosciutto and sage, pan-fried in white wine and butter.', prepTime: 10, cookTime: 15, servings: 4, difficulty: 'medium', calories: 360, tags: ['veal','prosciutto','Italian','quick'] },
+  { title: 'Cacio e Pepe', category: 'Italian', description: 'Roman pasta with Pecorino Romano and freshly cracked black pepper — elegantly simple.', prepTime: 5, cookTime: 15, servings: 4, difficulty: 'medium', calories: 480, tags: ['pasta','cheese','Roman','simple'] },
+  { title: 'Chicken Teriyaki', category: 'Japanese', description: 'Grilled chicken glazed with a sweet-savory teriyaki sauce, served over steamed rice.', prepTime: 10, cookTime: 20, servings: 4, difficulty: 'easy', calories: 380, tags: ['chicken','grilled','sweet','Japanese'] },
+  { title: 'Miso Ramen', category: 'Japanese', description: 'Hearty ramen with miso-based broth, corn, bamboo shoots, and a swirl of butter.', prepTime: 20, cookTime: 30, servings: 4, difficulty: 'medium', calories: 520, tags: ['noodles','miso','soup','Japanese'] },
+  { title: 'Katsudon', category: 'Japanese', description: 'Crispy tonkatsu and egg simmered in sweet dashi sauce, served over a bowl of rice.', prepTime: 15, cookTime: 20, servings: 2, difficulty: 'medium', calories: 620, tags: ['pork','egg','rice','Japanese'] },
+  { title: 'Edamame', category: 'Japanese', description: 'Boiled young soybeans in the pod, salted and served as a classic Japanese appetizer.', prepTime: 5, cookTime: 10, servings: 4, difficulty: 'easy', calories: 120, tags: ['snack','healthy','quick','Japanese'] },
+  { title: 'Hot Dog', category: 'American', description: 'Classic all-beef frankfurter in a soft bun with mustard, ketchup, and relish.', prepTime: 5, cookTime: 5, servings: 4, difficulty: 'easy', calories: 290, tags: ['beef','sandwich','quick','classic'] },
+  { title: 'Club Sandwich', category: 'American', description: 'Triple-decker sandwich with turkey, bacon, lettuce, tomato, and mayo on toasted bread.', prepTime: 15, cookTime: 10, servings: 2, difficulty: 'easy', calories: 520, tags: ['sandwich','turkey','bacon','classic'] },
+  { title: 'Caesar Salad', category: 'American', description: 'Romaine lettuce tossed with Caesar dressing, croutons, and shaved Parmesan.', prepTime: 15, cookTime: 0, servings: 4, difficulty: 'easy', calories: 280, tags: ['salad','classic','Parmesan','fresh'] },
+  { title: 'Burritos', category: 'Mexican', description: 'Large flour tortilla stuffed with seasoned beef, rice, beans, cheese, sour cream, and pico de gallo.', prepTime: 20, cookTime: 20, servings: 4, difficulty: 'easy', calories: 580, tags: ['tortilla','beef','Mexican','filling'] },
+  { title: 'Quesadillas', category: 'Mexican', description: 'Flour tortilla filled with melted cheese, grilled chicken, and peppers, crisped in a pan.', prepTime: 10, cookTime: 10, servings: 2, difficulty: 'easy', calories: 420, tags: ['tortilla','cheese','quick','Mexican'] },
+  { title: 'Beef and Broccoli', category: 'Chinese', description: 'Tender beef strips and crisp broccoli stir-fried in a savory oyster sauce-based sauce.', prepTime: 15, cookTime: 15, servings: 4, difficulty: 'easy', calories: 320, tags: ['beef','vegetable','stir-fry','Chinese'] },
+  { title: 'Mapo Tofu', category: 'Chinese', description: 'Silken tofu and minced pork in a numbing spicy Sichuan sauce with doubanjiang.', prepTime: 10, cookTime: 15, servings: 4, difficulty: 'medium', calories: 280, tags: ['tofu','spicy','Sichuan','pork'] },
+  { title: 'Dal Makhani', category: 'Indian', description: 'Slow-cooked black lentils and kidney beans in a rich, smoky tomato-butter-cream sauce.', prepTime: 20, cookTime: 180, servings: 6, difficulty: 'medium', calories: 380, tags: ['lentils','vegetarian','creamy','Indian'] },
+  { title: 'Palak Paneer', category: 'Indian', description: 'Indian cottage cheese cubes in a vibrant pureed spinach sauce spiced with garam masala.', prepTime: 20, cookTime: 30, servings: 4, difficulty: 'medium', calories: 310, tags: ['vegetarian','spinach','cheese','Indian'] },
+  { title: 'French Onion Soup', category: 'French', description: 'Slow-caramelized onion soup under a crouton topped with melted Gruyère cheese.', prepTime: 15, cookTime: 90, servings: 6, difficulty: 'medium', calories: 320, tags: ['soup','onion','cheese','French'] },
+  { title: 'Bouillabaisse', category: 'French', description: 'Traditional Provençal fish stew with saffron broth, shellfish, and rouille-topped croutons.', prepTime: 30, cookTime: 60, servings: 6, difficulty: 'hard', calories: 340, tags: ['seafood','stew','Provence','French'] },
+]
+
+// Pad to exactly 100
+const recipeBase = [...recipeData]
+const recipeExtras = [
+  { title: 'Shakshuka', category: 'American', description: 'Poached eggs in a spiced tomato and pepper sauce — popular for brunch worldwide.', prepTime: 10, cookTime: 20, servings: 2, difficulty: 'easy', calories: 280, tags: ['egg','brunch','tomato','spicy'] },
+  { title: 'Greek Salad', category: 'Italian', description: 'Fresh tomatoes, cucumber, olives, red onion, and feta with olive oil and oregano.', prepTime: 10, cookTime: 0, servings: 4, difficulty: 'easy', calories: 220, tags: ['salad','fresh','Mediterranean','feta'] },
+  { title: 'Pad Krapow Moo', category: 'Thai', description: 'Minced pork stir-fried with holy basil, fish sauce, oyster sauce, and bird\'s eye chili.', prepTime: 10, cookTime: 10, servings: 2, difficulty: 'easy', calories: 380, tags: ['pork','basil','spicy','Thai'] },
+  { title: 'Yakisoba', category: 'Japanese', description: 'Stir-fried Japanese wheat noodles with pork, cabbage, and Worcestershire-based sauce.', prepTime: 15, cookTime: 10, servings: 2, difficulty: 'easy', calories: 400, tags: ['noodles','stir-fry','Japanese','quick'] },
+  { title: 'Tortilla Española', category: 'Mexican', description: 'Spanish egg and potato omelette — thick, hearty, and perfect warm or at room temperature.', prepTime: 20, cookTime: 30, servings: 6, difficulty: 'medium', calories: 320, tags: ['egg','potato','Spanish','brunch'] },
+  { title: 'Chili Con Carne', category: 'American', description: 'Spicy ground beef stew with kidney beans, tomatoes, and a blend of smoky chili spices.', prepTime: 15, cookTime: 60, servings: 6, difficulty: 'easy', calories: 420, tags: ['beef','beans','spicy','comfort'] },
+]
+while (recipeBase.length < 100) {
+  recipeBase.push(recipeExtras[recipeBase.length % recipeExtras.length])
+}
+
+const recipes = recipeBase.slice(0, 100).map((r, i) => ({
+  id: String(i + 1),
+  title: r.title,
+  description: r.description,
+  ingredients: Array.from({ length: randInt(5, 10) }, (_, k) => {
+    const ingredientPools = {
+      Thai: ['garlic','fish sauce','oyster sauce','Thai basil','chili','lemongrass','coconut milk','lime juice','sugar','shallots','galangal','kaffir lime leaves','shrimp paste','rice','egg','pork','chicken','shrimp','tofu','spring onion'],
+      Italian: ['olive oil','garlic','Parmesan','tomato','basil','pasta','mozzarella','pancetta','white wine','butter','cream','oregano','flour','eggs','ricotta','prosciutto','anchovies','capers','pine nuts','balsamic vinegar'],
+      Japanese: ['soy sauce','mirin','sake','dashi','tofu','nori','ginger','sesame oil','rice vinegar','bonito flakes','green onion','miso paste','rice','cabbage','pork belly','shrimp','egg','wakame','bamboo shoots','kombu'],
+      American: ['butter','cheddar cheese','bacon','eggs','milk','cream','flour','sugar','salt','pepper','BBQ sauce','ketchup','mustard','mayonnaise','lettuce','tomato','onion','garlic powder','paprika','Worcestershire sauce'],
+      Mexican: ['tortillas','avocado','lime','cilantro','jalapeño','cumin','chili powder','black beans','corn','tomato','sour cream','cheese','red onion','garlic','oregano','ancho chili','masa','lard','pork','beef'],
+      Chinese: ['soy sauce','sesame oil','ginger','garlic','rice vinegar','cornstarch','oyster sauce','hoisin sauce','doubanjiang','Shaoxing wine','green onion','chili oil','five-spice','pork belly','tofu','bok choy','shiitake mushroom','egg','rice','noodles'],
+      Indian: ['turmeric','cumin','coriander','garam masala','cardamom','ginger','garlic','onion','tomato','ghee','cream','yoghurt','basmati rice','lentils','chickpeas','chicken','paneer','mustard seeds','curry leaves','chili powder'],
+      French: ['butter','cream','shallots','white wine','Gruyère','thyme','bay leaf','tarragon','Dijon mustard','flour','egg yolks','cognac','veal stock','leeks','mushrooms','duck','beef','lardons','Beurre blanc','pastry dough'],
+    }
+    const pool = ingredientPools[r.category] || ingredientPools['American']
+    return `${randFloat(0.5, 3, 1)} ${rand(['cup','tbsp','tsp','kg','g','piece','clove','slice',''])} ${pool[k % pool.length]}`.trim()
+  }),
+  steps: Array.from({ length: randInt(4, 7) }, (_, k) => {
+    const stepVerbs = ['Prepare','Chop','Mix','Heat','Add','Stir','Cook','Simmer','Season','Serve','Combine','Fry','Boil','Whisk','Garnish']
+    return `Step ${k + 1}: ${rand(stepVerbs)} the ingredients according to the recipe instructions for this step.`
+  }),
+  category: r.category,
+  prepTime: r.prepTime,
+  cookTime: r.cookTime,
+  servings: r.servings,
+  difficulty: r.difficulty,
+  calories: r.calories,
+  tags: r.tags,
+  image: `https://picsum.photos/seed/recipe${i + 1}/600/400`,
+  createdAt: dateStr(randInt(1, 500)),
+}))
+
+
+// ── ANIMALS (100) ──────────────────────────────────────────────────────────
+const animalData = [
+  { name: 'Lion', scientificName: 'Panthera leo', category: 'Mammal', habitat: 'Grassland', diet: 'Carnivore', lifespan: 14, weight: '120-200 kg', length: '1.7-2.5 m', conservationStatus: 'Vulnerable', description: 'The lion is one of the most iconic big cats, known for its majestic mane and social pride structure.' },
+  { name: 'Tiger', scientificName: 'Panthera tigris', category: 'Mammal', habitat: 'Forest', diet: 'Carnivore', lifespan: 20, weight: '100-300 kg', length: '2.5-3.9 m', conservationStatus: 'Endangered', description: 'The tiger is the largest wild cat species, known for its distinctive striped coat.' },
+  { name: 'Elephant', scientificName: 'Loxodonta africana', category: 'Mammal', habitat: 'Grassland', diet: 'Herbivore', lifespan: 65, weight: '2700-6000 kg', length: '5.5-7.5 m', conservationStatus: 'Vulnerable', description: 'The African elephant is the largest land animal on Earth, known for its remarkable intelligence.' },
+  { name: 'Giraffe', scientificName: 'Giraffa camelopardalis', category: 'Mammal', habitat: 'Grassland', diet: 'Herbivore', lifespan: 25, weight: '700-1270 kg', length: '4.5-6 m', conservationStatus: 'Vulnerable', description: 'The giraffe is the tallest living terrestrial animal, using its long neck to browse high foliage.' },
+  { name: 'Zebra', scientificName: 'Equus quagga', category: 'Mammal', habitat: 'Grassland', diet: 'Herbivore', lifespan: 25, weight: '200-450 kg', length: '2.2-2.5 m', conservationStatus: 'Near Threatened', description: 'Zebras are African equids with distinctive black and white striped coats unique to each individual.' },
+  { name: 'Gorilla', scientificName: 'Gorilla gorilla', category: 'Mammal', habitat: 'Rainforest', diet: 'Herbivore', lifespan: 35, weight: '100-200 kg', length: '1.4-1.8 m', conservationStatus: 'Critically Endangered', description: 'Gorillas are the largest living primates, sharing about 98% of their DNA with humans.' },
+  { name: 'Chimpanzee', scientificName: 'Pan troglodytes', category: 'Mammal', habitat: 'Rainforest', diet: 'Omnivore', lifespan: 45, weight: '32-60 kg', length: '0.7-1 m', conservationStatus: 'Endangered', description: 'Chimpanzees are our closest living relatives, known for their intelligence and tool use.' },
+  { name: 'Orangutan', scientificName: 'Pongo pygmaeus', category: 'Mammal', habitat: 'Rainforest', diet: 'Herbivore', lifespan: 35, weight: '30-90 kg', length: '1.2-1.5 m', conservationStatus: 'Critically Endangered', description: 'Orangutans are the world\'s largest arboreal mammals, spending most of their lives in trees.' },
+  { name: 'Giant Panda', scientificName: 'Ailuropoda melanoleuca', category: 'Mammal', habitat: 'Forest', diet: 'Herbivore', lifespan: 20, weight: '70-125 kg', length: '1.2-1.5 m', conservationStatus: 'Vulnerable', description: 'The giant panda is a bear species endemic to China, recognized for its distinctive black and white coat.' },
+  { name: 'Polar Bear', scientificName: 'Ursus maritimus', category: 'Mammal', habitat: 'Arctic', diet: 'Carnivore', lifespan: 25, weight: '350-700 kg', length: '2-2.5 m', conservationStatus: 'Vulnerable', description: 'The polar bear is the world\'s largest land carnivore, perfectly adapted to its Arctic habitat.' },
+  { name: 'Grizzly Bear', scientificName: 'Ursus arctos horribilis', category: 'Mammal', habitat: 'Forest', diet: 'Omnivore', lifespan: 25, weight: '130-360 kg', length: '1.5-2.8 m', conservationStatus: 'Least Concern', description: 'Grizzly bears are large North American brown bears known for their impressive strength and size.' },
+  { name: 'Wolf', scientificName: 'Canis lupus', category: 'Mammal', habitat: 'Forest', diet: 'Carnivore', lifespan: 14, weight: '25-50 kg', length: '1-1.6 m', conservationStatus: 'Least Concern', description: 'Wolves are apex predators and the largest wild members of the dog family, living in packs.' },
+  { name: 'Arctic Fox', scientificName: 'Vulpes lagopus', category: 'Mammal', habitat: 'Arctic', diet: 'Omnivore', lifespan: 14, weight: '2.5-9 kg', length: '0.5-0.7 m', conservationStatus: 'Least Concern', description: 'The arctic fox is perfectly adapted to its frigid environment with its thick white winter coat.' },
+  { name: 'Deer', scientificName: 'Cervus elaphus', category: 'Mammal', habitat: 'Forest', diet: 'Herbivore', lifespan: 20, weight: '40-300 kg', length: '1.6-2.6 m', conservationStatus: 'Least Concern', description: 'Deer are graceful hoofed mammals recognized by the antlers grown by males.' },
+  { name: 'Kangaroo', scientificName: 'Macropus rufus', category: 'Mammal', habitat: 'Grassland', diet: 'Herbivore', lifespan: 23, weight: '18-90 kg', length: '0.8-1.6 m', conservationStatus: 'Least Concern', description: 'Kangaroos are iconic marsupials of Australia, known for powerful hind legs and carrying joeys in a pouch.' },
+  { name: 'Koala', scientificName: 'Phascolarctos cinereus', category: 'Mammal', habitat: 'Forest', diet: 'Herbivore', lifespan: 15, weight: '4-15 kg', length: '0.6-0.85 m', conservationStatus: 'Vulnerable', description: 'Koalas are arboreal marsupials found in eucalyptus forests of Australia, known for their sleepy demeanor.' },
+  { name: 'Emperor Penguin', scientificName: 'Aptenodytes forsteri', category: 'Bird', habitat: 'Arctic', diet: 'Carnivore', lifespan: 20, weight: '22-37 kg', length: '1-1.2 m', conservationStatus: 'Near Threatened', description: 'The emperor penguin is the tallest and heaviest of all penguins, living in the Antarctic.' },
+  { name: 'Bald Eagle', scientificName: 'Haliaeetus leucocephalus', category: 'Bird', habitat: 'Forest', diet: 'Carnivore', lifespan: 28, weight: '3-6.3 kg', length: '0.7-1 m', conservationStatus: 'Least Concern', description: 'The bald eagle is the national bird of the United States, known for its white head and powerful flight.' },
+  { name: 'Great Horned Owl', scientificName: 'Bubo virginianus', category: 'Bird', habitat: 'Forest', diet: 'Carnivore', lifespan: 13, weight: '0.9-2.5 kg', length: '0.45-0.63 m', conservationStatus: 'Least Concern', description: 'The great horned owl is one of North America\'s most adaptable raptors with distinctive ear tufts.' },
+  { name: 'Macaw', scientificName: 'Ara macao', category: 'Bird', habitat: 'Rainforest', diet: 'Herbivore', lifespan: 50, weight: '0.9-1.7 kg', length: '0.8-0.9 m', conservationStatus: 'Least Concern', description: 'Scarlet macaws are vibrant parrots of the Amazon rainforest, known for their brilliant plumage.' },
+  { name: 'Flamingo', scientificName: 'Phoenicopterus roseus', category: 'Bird', habitat: 'Freshwater', diet: 'Omnivore', lifespan: 30, weight: '2-4 kg', length: '1-1.2 m', conservationStatus: 'Least Concern', description: 'Flamingos are famous for their pink plumage and distinctive one-legged resting stance.' },
+  { name: 'Peacock', scientificName: 'Pavo cristatus', category: 'Bird', habitat: 'Forest', diet: 'Omnivore', lifespan: 20, weight: '4-6 kg', length: '1-1.2 m', conservationStatus: 'Least Concern', description: 'The peacock is renowned for the male\'s spectacular iridescent tail feathers used in courtship displays.' },
+  { name: 'Toucan', scientificName: 'Ramphastos sulfuratus', category: 'Bird', habitat: 'Rainforest', diet: 'Omnivore', lifespan: 20, weight: '0.5-0.9 kg', length: '0.5-0.6 m', conservationStatus: 'Least Concern', description: 'Toucans are tropical birds recognized by their oversized, colorful bills used to reach fruit.' },
+  { name: 'Hummingbird', scientificName: 'Trochilidae sp.', category: 'Bird', habitat: 'Rainforest', diet: 'Herbivore', lifespan: 5, weight: '0.002-0.02 kg', length: '0.07-0.12 m', conservationStatus: 'Least Concern', description: 'Hummingbirds are the smallest birds on Earth, capable of hovering in mid-air while feeding on nectar.' },
+  { name: 'Albatross', scientificName: 'Diomedea exulans', category: 'Bird', habitat: 'Ocean', diet: 'Carnivore', lifespan: 50, weight: '5.9-11.9 kg', length: '1-1.35 m', conservationStatus: 'Vulnerable', description: 'The wandering albatross has the largest wingspan of any living bird and can glide for hours.' },
+  { name: 'Cassowary', scientificName: 'Casuarius casuarius', category: 'Bird', habitat: 'Rainforest', diet: 'Herbivore', lifespan: 40, weight: '25-58.5 kg', length: '1.3-1.7 m', conservationStatus: 'Vulnerable', description: 'The cassowary is a large flightless bird from New Guinea, considered the most dangerous bird in the world.' },
+  { name: 'Ostrich', scientificName: 'Struthio camelus', category: 'Bird', habitat: 'Desert', diet: 'Herbivore', lifespan: 45, weight: '63-145 kg', length: '2.1-2.8 m', conservationStatus: 'Least Concern', description: 'The ostrich is the world\'s largest and heaviest living bird, capable of running at 70 km/h.' },
+  { name: 'Nile Crocodile', scientificName: 'Crocodylus niloticus', category: 'Reptile', habitat: 'Freshwater', diet: 'Carnivore', lifespan: 70, weight: '225-750 kg', length: '3.5-5 m', conservationStatus: 'Least Concern', description: 'The Nile crocodile is one of Africa\'s most dangerous predators, lurking in rivers and lakes.' },
+  { name: 'Komodo Dragon', scientificName: 'Varanus komodoensis', category: 'Reptile', habitat: 'Forest', diet: 'Carnivore', lifespan: 30, weight: '70-90 kg', length: '2-3 m', conservationStatus: 'Endangered', description: 'The Komodo dragon is the world\'s largest living lizard, found only on a few Indonesian islands.' },
+  { name: 'Chameleon', scientificName: 'Chamaeleo calyptratus', category: 'Reptile', habitat: 'Rainforest', diet: 'Carnivore', lifespan: 7, weight: '0.1-0.6 kg', length: '0.25-0.6 m', conservationStatus: 'Least Concern', description: 'Chameleons are famous for their ability to change color and independently move each eye.' },
+  { name: 'Green Sea Turtle', scientificName: 'Chelonia mydas', category: 'Reptile', habitat: 'Ocean', diet: 'Herbivore', lifespan: 80, weight: '68-190 kg', length: '0.8-1.2 m', conservationStatus: 'Endangered', description: 'Green sea turtles are ancient mariners that return to the same beaches where they were born to nest.' },
+  { name: 'King Cobra', scientificName: 'Ophiophagus hannah', category: 'Reptile', habitat: 'Rainforest', diet: 'Carnivore', lifespan: 20, weight: '5-9 kg', length: '3.7-5.5 m', conservationStatus: 'Vulnerable', description: 'The king cobra is the world\'s longest venomous snake and the only snake known to build nests.' },
+  { name: 'Python', scientificName: 'Python reticulatus', category: 'Reptile', habitat: 'Rainforest', diet: 'Carnivore', lifespan: 25, weight: '75-160 kg', length: '5-7 m', conservationStatus: 'Least Concern', description: 'The reticulated python is the world\'s longest snake, a powerful constrictor from Southeast Asia.' },
+  { name: 'Iguana', scientificName: 'Iguana iguana', category: 'Reptile', habitat: 'Rainforest', diet: 'Herbivore', lifespan: 20, weight: '4-8 kg', length: '1.5-2 m', conservationStatus: 'Least Concern', description: 'Green iguanas are large arboreal lizards of Central and South America, popular as exotic pets.' },
+  { name: 'Gecko', scientificName: 'Gekko gecko', category: 'Reptile', habitat: 'Rainforest', diet: 'Carnivore', lifespan: 10, weight: '0.06-0.1 kg', length: '0.14-0.3 m', conservationStatus: 'Least Concern', description: 'Geckos are small lizards known for their ability to climb smooth surfaces using specialized toe pads.' },
+  { name: 'Great White Shark', scientificName: 'Carcharodon carcharias', category: 'Fish', habitat: 'Ocean', diet: 'Carnivore', lifespan: 70, weight: '680-1100 kg', length: '4-6 m', conservationStatus: 'Vulnerable', description: 'The great white shark is the world\'s largest predatory fish, responsible for the most unprovoked attacks on humans.' },
+  { name: 'Bottlenose Dolphin', scientificName: 'Tursiops truncatus', category: 'Mammal', habitat: 'Ocean', diet: 'Carnivore', lifespan: 40, weight: '150-650 kg', length: '2-4 m', conservationStatus: 'Least Concern', description: 'Bottlenose dolphins are highly intelligent marine mammals known for their playful behavior and communication.' },
+  { name: 'Blue Whale', scientificName: 'Balaenoptera musculus', category: 'Mammal', habitat: 'Ocean', diet: 'Carnivore', lifespan: 80, weight: '100000-150000 kg', length: '24-33 m', conservationStatus: 'Endangered', description: 'The blue whale is the largest animal known to have ever existed on Earth.' },
+  { name: 'Octopus', scientificName: 'Octopus vulgaris', category: 'Fish', habitat: 'Ocean', diet: 'Carnivore', lifespan: 3, weight: '1-10 kg', length: '0.3-1 m', conservationStatus: 'Least Concern', description: 'Octopuses are highly intelligent cephalopods with eight arms and the ability to change color and texture.' },
+  { name: 'Jellyfish', scientificName: 'Aurelia aurita', category: 'Fish', habitat: 'Ocean', diet: 'Carnivore', lifespan: 1, weight: '0.01-0.5 kg', length: '0.05-0.4 m', conservationStatus: 'Least Concern', description: 'Jellyfish are among the oldest animals on Earth, drifting through oceans with stinging tentacles.' },
+  { name: 'Monarch Butterfly', scientificName: 'Danaus plexippus', category: 'Insect', habitat: 'Grassland', diet: 'Herbivore', lifespan: 1, weight: '0.0003-0.0007 kg', length: '0.08-0.1 m', conservationStatus: 'Endangered', description: 'Monarch butterflies are famous for their spectacular 4000 km annual migration to Mexico.' },
+  { name: 'Honey Bee', scientificName: 'Apis mellifera', category: 'Insect', habitat: 'Grassland', diet: 'Herbivore', lifespan: 1, weight: '0.0001 kg', length: '0.013-0.015 m', conservationStatus: 'Vulnerable', description: 'Honey bees are vital pollinators responsible for one-third of the food humans eat.' },
+  { name: 'Leafcutter Ant', scientificName: 'Atta cephalotes', category: 'Insect', habitat: 'Rainforest', diet: 'Herbivore', lifespan: 1, weight: '0.00002 kg', length: '0.005-0.016 m', conservationStatus: 'Least Concern', description: 'Leafcutter ants are expert farmers that cultivate fungal gardens inside their underground colonies.' },
+  { name: 'Firefly', scientificName: 'Lampyris noctiluca', category: 'Insect', habitat: 'Forest', diet: 'Carnivore', lifespan: 2, weight: '0.00002 kg', length: '0.01-0.025 m', conservationStatus: 'Near Threatened', description: 'Fireflies produce cold bioluminescent light used for attracting mates on summer evenings.' },
+  { name: 'Tarantula', scientificName: 'Brachypelma hamorii', category: 'Arachnid', habitat: 'Desert', diet: 'Carnivore', lifespan: 25, weight: '0.03-0.08 kg', length: '0.13-0.15 m', conservationStatus: 'Near Threatened', description: 'Tarantulas are large, hairy spiders found in tropical and desert regions worldwide.' },
+  { name: 'Scorpion', scientificName: 'Pandinus imperator', category: 'Arachnid', habitat: 'Desert', diet: 'Carnivore', lifespan: 8, weight: '0.02-0.06 kg', length: '0.13-0.2 m', conservationStatus: 'Near Threatened', description: 'Emperor scorpions are one of the largest scorpions in the world, found in African rainforests.' },
+  { name: 'Tree Frog', scientificName: 'Hyla cinerea', category: 'Amphibian', habitat: 'Rainforest', diet: 'Carnivore', lifespan: 6, weight: '0.002-0.012 kg', length: '0.03-0.06 m', conservationStatus: 'Least Concern', description: 'Tree frogs use sticky toe pads to cling to leaves and branches in moist forest environments.' },
+  { name: 'Axolotl', scientificName: 'Ambystoma mexicanum', category: 'Amphibian', habitat: 'Freshwater', diet: 'Carnivore', lifespan: 15, weight: '0.06-0.3 kg', length: '0.15-0.45 m', conservationStatus: 'Critically Endangered', description: 'The axolotl is a remarkable amphibian capable of regrowing lost limbs, native to Mexico City lakes.' },
+  { name: 'Poison Dart Frog', scientificName: 'Dendrobates azureus', category: 'Amphibian', habitat: 'Rainforest', diet: 'Carnivore', lifespan: 10, weight: '0.002-0.005 kg', length: '0.03-0.045 m', conservationStatus: 'Vulnerable', description: 'Poison dart frogs advertise their toxicity with brilliant colors — one of nature\'s finest warning signals.' },
+  { name: 'Salamander', scientificName: 'Salamandra salamandra', category: 'Amphibian', habitat: 'Forest', diet: 'Carnivore', lifespan: 20, weight: '0.01-0.05 kg', length: '0.15-0.25 m', conservationStatus: 'Least Concern', description: 'Fire salamanders are striking black and yellow amphibians found in European forests.' },
+  { name: 'Toad', scientificName: 'Bufo bufo', category: 'Amphibian', habitat: 'Forest', diet: 'Carnivore', lifespan: 12, weight: '0.02-0.08 kg', length: '0.06-0.15 m', conservationStatus: 'Least Concern', description: 'Common toads are found across Europe, using their long sticky tongues to catch insects.' },
+  { name: 'Cheetah', scientificName: 'Acinonyx jubatus', category: 'Mammal', habitat: 'Grassland', diet: 'Carnivore', lifespan: 12, weight: '21-72 kg', length: '1.1-1.5 m', conservationStatus: 'Vulnerable', description: 'The cheetah is the fastest land animal on Earth, reaching speeds of up to 120 km/h in short bursts.' },
+  { name: 'Snow Leopard', scientificName: 'Panthera uncia', category: 'Mammal', habitat: 'Forest', diet: 'Carnivore', lifespan: 21, weight: '22-55 kg', length: '1-1.3 m', conservationStatus: 'Vulnerable', description: 'Snow leopards are elusive big cats of the Central Asian mountains, perfectly adapted to cold altitudes.' },
+  { name: 'Rhinoceros', scientificName: 'Diceros bicornis', category: 'Mammal', habitat: 'Grassland', diet: 'Herbivore', lifespan: 40, weight: '700-1400 kg', length: '3-3.8 m', conservationStatus: 'Critically Endangered', description: 'The black rhinoceros is a critically endangered browser of African savannas, known for its two horns.' },
+  { name: 'Hippo', scientificName: 'Hippopotamus amphibius', category: 'Mammal', habitat: 'Freshwater', diet: 'Herbivore', lifespan: 40, weight: '1500-3000 kg', length: '3.5-5 m', conservationStatus: 'Vulnerable', description: 'Hippos are Africa\'s most dangerous large mammals, spending their days submerged in rivers.' },
+  { name: 'Camel', scientificName: 'Camelus dromedarius', category: 'Mammal', habitat: 'Desert', diet: 'Herbivore', lifespan: 40, weight: '400-600 kg', length: '2.2-3.4 m', conservationStatus: 'Least Concern', description: 'Dromedary camels are adapted to extreme desert heat, storing fat in their single hump.' },
+  { name: 'Alpaca', scientificName: 'Vicugna pacos', category: 'Mammal', habitat: 'Grassland', diet: 'Herbivore', lifespan: 20, weight: '48-84 kg', length: '1.2-2.25 m', conservationStatus: 'Least Concern', description: 'Alpacas are domesticated South American camelids prized for their soft, luxurious wool.' },
+  { name: 'Sloth', scientificName: 'Bradypus variegatus', category: 'Mammal', habitat: 'Rainforest', diet: 'Herbivore', lifespan: 30, weight: '3.5-4.5 kg', length: '0.42-0.8 m', conservationStatus: 'Least Concern', description: 'Three-toed sloths are the world\'s slowest mammals, hanging upside down in tropical rainforest canopies.' },
+  { name: 'Bat', scientificName: 'Pteropus vampyrus', category: 'Mammal', habitat: 'Rainforest', diet: 'Herbivore', lifespan: 15, weight: '0.65-1.1 kg', length: '0.26-0.4 m', conservationStatus: 'Endangered', description: 'The large flying fox is a Southeast Asian megabat and important pollinator of tropical forests.' },
+  { name: 'Hedgehog', scientificName: 'Erinaceus europaeus', category: 'Mammal', habitat: 'Grassland', diet: 'Omnivore', lifespan: 7, weight: '0.4-1.2 kg', length: '0.14-0.3 m', conservationStatus: 'Least Concern', description: 'Hedgehogs have up to 7000 spines that protect them from predators when they roll into a ball.' },
+  { name: 'Platypus', scientificName: 'Ornithorhynchus anatinus', category: 'Mammal', habitat: 'Freshwater', diet: 'Carnivore', lifespan: 17, weight: '0.7-2.4 kg', length: '0.38-0.6 m', conservationStatus: 'Near Threatened', description: 'The platypus is a unique egg-laying mammal with a duck\'s bill, beaver\'s tail, and otter\'s feet.' },
+  { name: 'Meerkat', scientificName: 'Suricata suricatta', category: 'Mammal', habitat: 'Desert', diet: 'Omnivore', lifespan: 14, weight: '0.6-0.97 kg', length: '0.25-0.35 m', conservationStatus: 'Least Concern', description: 'Meerkats are social mongooses of the Kalahari, famous for standing upright to scan for predators.' },
+  { name: 'Red Fox', scientificName: 'Vulpes vulpes', category: 'Mammal', habitat: 'Forest', diet: 'Omnivore', lifespan: 14, weight: '2.2-14 kg', length: '0.45-0.9 m', conservationStatus: 'Least Concern', description: 'The red fox is the most widely distributed wild carnivore, found on every continent except Antarctica.' },
+  { name: 'Otter', scientificName: 'Lutra lutra', category: 'Mammal', habitat: 'Freshwater', diet: 'Carnivore', lifespan: 10, weight: '5-12 kg', length: '0.57-0.9 m', conservationStatus: 'Near Threatened', description: 'Eurasian otters are semi-aquatic mammals that glide through rivers hunting fish and crustaceans.' },
+  { name: 'Seal', scientificName: 'Phoca vitulina', category: 'Mammal', habitat: 'Ocean', diet: 'Carnivore', lifespan: 30, weight: '45-130 kg', length: '1.2-1.9 m', conservationStatus: 'Least Concern', description: 'Harbor seals are common coastal pinnipeds found in the North Atlantic and Pacific Oceans.' },
+  { name: 'Walrus', scientificName: 'Odobenus rosmarus', category: 'Mammal', habitat: 'Arctic', diet: 'Carnivore', lifespan: 40, weight: '600-1500 kg', length: '2.2-3.6 m', conservationStatus: 'Vulnerable', description: 'Walruses are large Arctic marine mammals recognized by their long tusks used for hauling onto ice.' },
+  { name: 'Manatee', scientificName: 'Trichechus manatus', category: 'Mammal', habitat: 'Freshwater', diet: 'Herbivore', lifespan: 65, weight: '400-590 kg', length: '2.7-3.9 m', conservationStatus: 'Vulnerable', description: 'Manatees are gentle herbivores often called sea cows, found in warm coastal waters and rivers.' },
+  { name: 'Narwhal', scientificName: 'Monodon monoceros', category: 'Mammal', habitat: 'Arctic', diet: 'Carnivore', lifespan: 50, weight: '800-1600 kg', length: '4-5.5 m', conservationStatus: 'Least Concern', description: 'Narwhals are Arctic whales famous for the long spiral tusk that protrudes from their heads.' },
+  { name: 'Orca', scientificName: 'Orcinus orca', category: 'Mammal', habitat: 'Ocean', diet: 'Carnivore', lifespan: 80, weight: '3600-5400 kg', length: '5.5-8 m', conservationStatus: 'Near Threatened', description: 'Orcas are the largest members of the dolphin family and apex predators of every ocean.' },
+  { name: 'Manta Ray', scientificName: 'Manta birostris', category: 'Fish', habitat: 'Ocean', diet: 'Herbivore', lifespan: 50, weight: '1350-2000 kg', length: '4.5-7 m', conservationStatus: 'Endangered', description: 'Giant manta rays are the world\'s largest rays, gracefully filter-feeding on plankton in warm oceans.' },
+  { name: 'Clownfish', scientificName: 'Amphiprion ocellaris', category: 'Fish', habitat: 'Ocean', diet: 'Omnivore', lifespan: 6, weight: '0.001-0.01 kg', length: '0.08-0.11 m', conservationStatus: 'Least Concern', description: 'Clownfish have a symbiotic relationship with sea anemones, living safely among their stinging tentacles.' },
+  { name: 'Seahorse', scientificName: 'Hippocampus kuda', category: 'Fish', habitat: 'Ocean', diet: 'Carnivore', lifespan: 5, weight: '0.001-0.01 kg', length: '0.15-0.3 m', conservationStatus: 'Vulnerable', description: 'Seahorses are unique fish where the male carries and gives birth to the young.' },
+  { name: 'Hammerhead Shark', scientificName: 'Sphyrna mokarran', category: 'Fish', habitat: 'Ocean', diet: 'Carnivore', lifespan: 44, weight: '230-450 kg', length: '3.5-6 m', conservationStatus: 'Critically Endangered', description: 'Great hammerhead sharks have a distinctive hammer-shaped head giving them 360-degree binocular vision.' },
+  { name: 'Anaconda', scientificName: 'Eunectes murinus', category: 'Reptile', habitat: 'Rainforest', diet: 'Carnivore', lifespan: 10, weight: '30-550 kg', length: '6-9 m', conservationStatus: 'Least Concern', description: 'The green anaconda is the world\'s heaviest snake and one of the longest, found in South American swamps.' },
+  { name: 'Peacock Spider', scientificName: 'Maratus volans', category: 'Arachnid', habitat: 'Grassland', diet: 'Carnivore', lifespan: 1, weight: '0.0001 kg', length: '0.004-0.005 m', conservationStatus: 'Least Concern', description: 'Peacock spiders are tiny Australian jumping spiders known for their brilliant, colorful abdomens.' },
+  { name: 'Mantis Shrimp', scientificName: 'Odontodactylus scyllarus', category: 'Fish', habitat: 'Ocean', diet: 'Carnivore', lifespan: 20, weight: '0.02-0.18 kg', length: '0.1-0.38 m', conservationStatus: 'Least Concern', description: 'Mantis shrimp have the most complex eyes of any animal and can strike with the force of a bullet.' },
+  { name: 'Lobster', scientificName: 'Homarus americanus', category: 'Fish', habitat: 'Ocean', diet: 'Omnivore', lifespan: 100, weight: '0.4-20 kg', length: '0.2-0.64 m', conservationStatus: 'Least Concern', description: 'American lobsters are long-lived marine crustaceans that continue growing throughout their lives.' },
+  { name: 'Crab', scientificName: 'Cancer pagurus', category: 'Fish', habitat: 'Ocean', diet: 'Omnivore', lifespan: 20, weight: '0.5-7 kg', length: '0.15-0.25 m', conservationStatus: 'Least Concern', description: 'Edible crabs are large marine crustaceans found along European Atlantic coasts.' },
+  { name: 'Leopard', scientificName: 'Panthera pardus', category: 'Mammal', habitat: 'Forest', diet: 'Carnivore', lifespan: 17, weight: '28-90 kg', length: '0.9-1.9 m', conservationStatus: 'Vulnerable', description: 'Leopards are secretive big cats known for hauling prey into trees and their adaptability to diverse habitats.' },
+  { name: 'Jaguar', scientificName: 'Panthera onca', category: 'Mammal', habitat: 'Rainforest', diet: 'Carnivore', lifespan: 12, weight: '56-158 kg', length: '1.1-1.85 m', conservationStatus: 'Near Threatened', description: 'The jaguar is the Americas\' largest cat, an apex predator of the Amazon rainforest.' },
+  { name: 'Newt', scientificName: 'Triturus cristatus', category: 'Amphibian', habitat: 'Freshwater', diet: 'Carnivore', lifespan: 14, weight: '0.01-0.025 kg', length: '0.11-0.18 m', conservationStatus: 'Near Threatened', description: 'Great crested newts are striking amphibians with an orange belly and spiky crest during breeding season.' },
+]
+
+// Pad to 100
+const animalBase = [...animalData]
+const animalExtras = [
+  { name: 'Snow Owl', scientificName: 'Bubo scandiacus', category: 'Bird', habitat: 'Arctic', diet: 'Carnivore', lifespan: 10, weight: '1.6-2.9 kg', length: '0.52-0.71 m', conservationStatus: 'Vulnerable', description: 'The snowy owl is an iconic Arctic raptor with stunning white plumage, made famous in popular culture.' },
+  { name: 'Pangolin', scientificName: 'Manis javanica', category: 'Mammal', habitat: 'Forest', diet: 'Carnivore', lifespan: 20, weight: '1-35 kg', length: '0.45-1 m', conservationStatus: 'Critically Endangered', description: 'Pangolins are the world\'s most trafficked mammals, covered in protective keratin scales.' },
+  { name: 'Electric Eel', scientificName: 'Electrophorus electricus', category: 'Fish', habitat: 'Freshwater', diet: 'Carnivore', lifespan: 22, weight: '20 kg', length: '1.5-2.5 m', conservationStatus: 'Least Concern', description: 'Electric eels can generate up to 860 volts of electricity to stun prey and deter predators.' },
+  { name: 'Golden Eagle', scientificName: 'Aquila chrysaetos', category: 'Bird', habitat: 'Grassland', diet: 'Carnivore', lifespan: 32, weight: '3-6.3 kg', length: '0.76-1.02 m', conservationStatus: 'Least Concern', description: 'Golden eagles are the most widely distributed eagle species, soaring over open landscapes.' },
+  { name: 'Naked Mole Rat', scientificName: 'Heterocephalus glaber', category: 'Mammal', habitat: 'Desert', diet: 'Herbivore', lifespan: 32, weight: '0.03-0.08 kg', length: '0.08-0.1 m', conservationStatus: 'Least Concern', description: 'Naked mole rats are extraordinary mammals resistant to cancer and capable of surviving with very little oxygen.' },
+]
+while (animalBase.length < 100) {
+  animalBase.push(animalExtras[animalBase.length % animalExtras.length])
+}
+
+const animals = animalBase.slice(0, 100).map((a, i) => ({
+  id: String(i + 1),
+  name: a.name,
+  scientificName: a.scientificName,
+  category: a.category,
+  habitat: a.habitat,
+  diet: a.diet,
+  lifespan: a.lifespan,
+  weight: a.weight,
+  length: a.length,
+  conservationStatus: a.conservationStatus,
+  description: a.description,
+  image: `https://picsum.photos/seed/animal${i + 1}/600/400`,
+  createdAt: dateStr(randInt(1, 500)),
+}))
+
+
 // ── OUTPUT ─────────────────────────────────────────────────────────────────
 const output = `/**
  * In-memory "database" for the API Playground backend
@@ -604,6 +879,8 @@ const output = `/**
  * Movies:    ${movies.length}
  * Books:     ${books.length}
  * Countries: ${countries.length}
+ * Recipes:   ${recipes.length}
+ * Animals:   ${animals.length}
  */
 
 // ── Users ──────────────────────────────────────────────────────────────────
@@ -632,6 +909,12 @@ export let books = ${JSON.stringify(books, null, 2)}
 // ── Countries ─────────────────────────────────────────────────────────────
 export let countries = ${JSON.stringify(countries, null, 2)}
 
+// ── Recipes ───────────────────────────────────────────────────────────────
+export let recipes = ${JSON.stringify(recipes, null, 2)}
+
+// ── Animals ───────────────────────────────────────────────────────────────
+export let animals = ${JSON.stringify(animals, null, 2)}
+
 // ── Students ──────────────────────────────────────────────────────────────
 ${studentsBlock}
 // ── Refresh tokens store ──────────────────────────────────────────────────
@@ -651,5 +934,7 @@ console.log(`  - ${posts.length} posts`)
 console.log(`  - ${movies.length} movies`)
 console.log(`  - ${books.length} books`)
 console.log(`  - ${countries.length} countries`)
+console.log(`  - ${recipes.length} recipes`)
+console.log(`  - ${animals.length} animals`)
 console.log(`  - students preserved from existing db.js`)
 console.log(`  → api/_lib/db.js`)

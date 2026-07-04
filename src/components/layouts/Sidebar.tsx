@@ -1,5 +1,5 @@
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import { Users, Package, FileText, GraduationCap, LayoutList, Film, BookOpen, Globe, CheckSquare } from 'lucide-react'
+import { Users, Package, FileText, GraduationCap, LayoutList, Film, BookOpen, Globe, CheckSquare, ChefHat, PawPrint } from 'lucide-react'
 import { allEndpoints } from '@/data/endpoints'
 import { categories } from '@/data/categories'
 import { cn } from '@/utils/cn'
@@ -14,6 +14,8 @@ const categoryIcons: Record<ApiCategory, React.ElementType> = {
   Books: BookOpen,
   Countries: Globe,
   Todos: CheckSquare,
+  Recipes: ChefHat,
+  Animals: PawPrint,
 }
 
 function getCountsByCategory() {

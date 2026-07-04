@@ -10,9 +10,10 @@ import { movieEndpoints } from './movies'
 import { bookEndpoints } from './books'
 import { countryEndpoints } from './countries'
 import { todoEndpoints } from './todos'
+import { recipeEndpoints } from './recipes'
+import { animalEndpoints } from './animals'
 import type { ApiEndpoint } from '@/types'
 
-/** All endpoints combined into a single array */
 export const allEndpoints: ApiEndpoint[] = [
   ...userEndpoints,
   ...postEndpoints,
@@ -22,15 +23,12 @@ export const allEndpoints: ApiEndpoint[] = [
   ...bookEndpoints,
   ...countryEndpoints,
   ...todoEndpoints,
+  ...recipeEndpoints,
+  ...animalEndpoints,
 ]
 
 export {
-  userEndpoints,
-  postEndpoints,
-  productEndpoints,
-  studentEndpoints,
-  movieEndpoints,
-  bookEndpoints,
-  countryEndpoints,
-  todoEndpoints,
+  userEndpoints, postEndpoints, productEndpoints, studentEndpoints,
+  movieEndpoints, bookEndpoints, countryEndpoints, todoEndpoints,
+  recipeEndpoints, animalEndpoints,
 }
