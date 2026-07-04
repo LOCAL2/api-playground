@@ -1,6 +1,5 @@
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import { Users, Package, FileText, GraduationCap, LayoutList, Film, BookOpen, Globe, CheckSquare, ChefHat, PawPrint } from 'lucide-react'
-import { allEndpoints } from '@/data/endpoints'
+import { Users, Package, FileText, GraduationCap, LayoutList, Film, BookOpen, Globe, CheckSquare, ChefHat, PawPrint, GitCommitHorizontal } from 'lucide-react'
 import { categories } from '@/data/categories'
 import { cn } from '@/utils/cn'
 import type { ApiCategory } from '@/types'
@@ -18,24 +17,9 @@ const categoryIcons: Record<ApiCategory, React.ElementType> = {
   Animals: PawPrint,
 }
 
-function getCountsByCategory() {
-  const counts: Partial<Record<ApiCategory, number>> = {}
-  for (const ep of allEndpoints) {
-    counts[ep.category] = (counts[ep.category] ?? 0) + 1
-  }
-  return counts
-}
-
 interface SidebarProps {
   className?: string
 }
-
-const activeClass = 'bg-zinc-200/80 text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-100'
-const inactiveClass = 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-700/60 dark:hover:text-zinc-100'
-const activeIconClass = 'bg-zinc-300/60 text-white dark:bg-zinc-600 dark:text-white'
-const inactiveIconClass = 'bg-zinc-100 text-white group-hover:text-white dark:bg-zinc-700 dark:text-white dark:group-hover:text-white'
-const activeBadgeClass = 'bg-zinc-300/60 text-zinc-700 dark:bg-zinc-600 dark:text-zinc-200'
-const inactiveBadgeClass = 'bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-400 dark:group-hover:bg-zinc-600'
 
 export function Sidebar({ className }: SidebarProps) {
   const location = useLocation()
@@ -44,65 +28,84 @@ export function Sidebar({ className }: SidebarProps) {
   const isOnRoot = location.pathname === '/'
   const activeCategory = searchParams.get('category')
   const isAllActive = isOnRoot && !activeCategory
+  const isChangelog = location.pathname === '/changelog'
 
   return (
     <aside
-      className={cn('flex h-full flex-col overflow-y-auto p-3', className)}
+      className={cn('flex h-full flex-col gap-1 overflow-y-auto px-2 py-3', className)}
       aria-label="Category navigation"
     >
-      {/* ── Overview ── */}
-      <div className="mb-3 rounded-xl border border-zinc-200 bg-white p-2 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-800/60">
-        <p className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
-          Overview
-        </p>
-        <Link
-          to="/"
-          className={cn('flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium transition-all', isAllActive ? activeClass : inactiveClass)}
-          aria-current={isAllActive ? 'page' : undefined}
-        >
-          <div className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-md', isAllActive ? activeIconClass : inactiveIconClass)}>
-            <LayoutList className="h-3.5 w-3.5" aria-hidden="true" />
-          </div>
-          <span className="flex-1">All Endpoints</span>
-        </Link>
-      </div>
+      {/* ── All Endpoints ── */}
+      <Link
+        to="/"
+        className={cn(
+          'group flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
+          isAllActive
+            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+            : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
+        )}
+        aria-current={isAllActive ? 'page' : undefined}
+      >
+        <LayoutList className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <span>All Endpoints</span>
+      </Link>
 
-      {/* ── Categories ── */}
-      <div className="rounded-xl border border-zinc-200 bg-white p-2 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-800/60">
-        <p className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
-          Categories
-        </p>
-        <nav className="flex flex-col gap-0.5">
-          {categories.map(cat => {
-            const Icon = categoryIcons[cat.name]
-            const isActive = isOnRoot && activeCategory === cat.name
+      {/* ── Changelog ── */}
+      <Link
+        to="/changelog"
+        className={cn(
+          'group flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
+          isChangelog
+            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+            : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
+        )}
+        aria-current={isChangelog ? 'page' : undefined}
+      >
+        <GitCommitHorizontal className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <span>Changelog</span>
+        <span className="ml-auto rounded-full bg-emerald-500 h-1.5 w-1.5" />
+      </Link>
 
-            return (
-              <Link
-                key={cat.name}
-                to={`/?category=${encodeURIComponent(cat.name)}`}
-                className={cn(
-                  'group relative flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium transition-all duration-150',
-                  isActive ? activeClass : inactiveClass
-                )}
-                aria-current={isActive ? 'page' : undefined}
-              >
-                {/* active indicator bar */}
-                {isActive && (
-                  <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-zinc-500 dark:bg-zinc-300" />
-                )}
-                <div className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors', isActive ? activeIconClass : inactiveIconClass)}>
-                  {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
-                </div>
-                <span className={cat.name === 'Students' ? 'flex-1' : 'flex-1 truncate'}>{cat.name}</span>
-                {cat.name === 'Students' && (
-                  <span className="shrink-0 rounded-full bg-blue-500 px-1.5 py-0.5 text-[9px] font-bold text-white">TNK</span>
-                )}
-              </Link>
-            )
-          })}
-        </nav>
-      </div>
+      {/* ── divider ── */}
+      <div className="my-1 h-px bg-zinc-100 dark:bg-zinc-800" />
+
+      {/* ── Categories label ── */}
+      <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-600">
+        Categories
+      </p>
+
+      {/* ── Category links ── */}
+      {categories.map(cat => {
+        const Icon = categoryIcons[cat.name]
+        const isActive = isOnRoot && activeCategory === cat.name
+
+        return (
+          <Link
+            key={cat.name}
+            to={`/?category=${encodeURIComponent(cat.name)}`}
+            className={cn(
+              'group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
+              isActive
+                ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100'
+                : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-200'
+            )}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            {isActive && (
+              <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-zinc-400 dark:bg-zinc-400" />
+            )}
+            {Icon && (
+              <Icon className={cn('h-4 w-4 shrink-0 transition-colors', isActive ? 'text-zinc-700 dark:text-zinc-200' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300')} aria-hidden="true" />
+            )}
+            <span className={cat.name === 'Students' ? 'flex-1' : 'flex-1 truncate'}>
+              {cat.name}
+            </span>
+            {cat.name === 'Students' && (
+              <span className="shrink-0 rounded-full bg-blue-500 px-1.5 py-0.5 text-[9px] font-bold text-white">TNK</span>
+            )}
+          </Link>
+        )
+      })}
     </aside>
   )
 }
