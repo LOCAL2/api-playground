@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Vercel Serverless Function — handles ALL /api/* routes
  * Uses Turso (LibSQL) for persistent storage
  */
@@ -627,7 +627,13 @@ export default async function handler(req, res) {
       }
       const logCount = (await db.execute('SELECT COUNT(*) as cnt FROM activity_logs')).rows[0]?.cnt ?? 0
       const recentLogs = (await db.execute('SELECT method, path, timestamp FROM activity_logs ORDER BY id DESC LIMIT 5')).rows.map(r => toCamel(r))
-      return ok(res, { rowCounts: counts, totalLogs: logCount, recentActivity: recentLogs })
+      const mutationLogs = (await db.execute("SELECT DISTINCT path FROM activity_logs WHERE method IN ('POST','PUT','PATCH','DELETE')")).rows
+      const mutatedTables = new Set()
+      for (const row of mutationLogs) {
+        const match = row.path?.match(/^\/api\/([a-z]+)/)
+        if (match) mutatedTables.add(match[1])
+      }
+      return ok(res, { rowCounts: counts, totalLogs: Number(logCount), recentActivity: recentLogs, mutatedTables: [...mutatedTables] })
     }
 
     // POST /admin/reset/:table — reset ตาราง

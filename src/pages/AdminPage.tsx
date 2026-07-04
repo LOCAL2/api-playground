@@ -298,21 +298,23 @@ export default function AdminPage() {
             {Object.entries(TABLE_LABELS).map(([table, label]) => {
               const current = stats?.rowCounts?.[table] ?? null
               const seed = SEED_COUNTS[table]
-              const diff = current !== null ? current - seed : 0
-              const changed = current !== null && current !== seed
+              const countDiff = current !== null ? current - seed : 0
+              const countChanged = current !== null && current !== seed
+              const mutated = stats?.mutatedTables?.includes(table) ?? false
+              const changed = countChanged || mutated
               return (
               <div key={table} className={cn('rounded-xl border p-3 dark:bg-zinc-900', changed ? 'border-amber-300 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-950/20' : 'border-zinc-200 bg-white dark:border-zinc-800')}>
                 <div className="mb-1.5 flex items-start justify-between gap-1">
                   <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 leading-tight">{label}</p>
                   {changed && (
-                    <span className={cn('shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-bold', diff > 0 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400')}>
-                      {diff > 0 ? `+${diff}` : diff}
+                    <span className={cn('shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-bold', countDiff > 0 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400' : countDiff < 0 ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400')}>
+                      {countDiff > 0 ? `+${countDiff}` : countDiff < 0 ? countDiff : 'แก้ไข'}
                     </span>
                   )}
                 </div>
                 {current !== null && (
                   <p className="mb-2 text-xs text-zinc-400 dark:text-zinc-500">
-                    {changed ? <><span className="font-semibold text-zinc-700 dark:text-zinc-200">{current}</span> / {seed}</> : `${current} rows`}
+                    {countChanged ? <><span className="font-semibold text-zinc-700 dark:text-zinc-200">{current}</span> / {seed}</> : mutated ? <span className="text-amber-600 dark:text-amber-400">มีการแก้ไข</span> : `${current} rows`}
                   </p>
                 )}
                 {resetConfirm === table ? (
