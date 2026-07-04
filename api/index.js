@@ -49,13 +49,12 @@ export default async function handler(req, res) {
   const method = req.method
   let m
 
-  // wrap ok/err เพื่อ auto-log mutations
-  const _ok = (data, status = 200) => {
-    if (MUTATION_METHODS.includes(method) && !path.startsWith('/admin')) {
-      logActivity(req, path, status)
-    }
-    return ok(res, data, status)
+  // log ทุก request ที่ไม่ใช่ admin และไม่ใช่ OPTIONS
+  if (!path.startsWith('/admin')) {
+    logActivity(req, path, 200)
   }
+
+  const _ok = (data, status = 200) => ok(res, data, status)
   const _err = (status, message) => err(res, status, message)
 
   // ── AUTH ───────────────────────────────────────────────────────────────
