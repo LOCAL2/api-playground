@@ -538,14 +538,14 @@ export default async function handler(req, res) {
     if (method === 'PUT') {
       const { name, scientificName, category, habitat, diet, lifespan, weight, length: len, conservationStatus, description } = req.body || {}
       if (!name) return err(res, 400, 'name is required')
-      await db.execute({ sql: 'UPDATE animals SET name=?,scientific_name=?,category=?,habitat=?,diet=?,lifespan=?,weight=?,length=?,conservation_status=?,description=? WHERE id=?', args: [name, scientificName??animal.scientificName, category??animal.category, habitat??animal.habitat, diet??animal.diet, lifespan??animal.lifespan, weight??animal.weight, len??animal.length, conservationStatus??animal.conservationStatus, description??animal.description, m.id] })
+      await db.execute({ sql: 'UPDATE animals SET name=?,scientific_name=?,category=?,habitat=?,diet=?,lifespan=?,weight=?,`length`=?,conservation_status=?,description=? WHERE id=?', args: [name, scientificName??animal.scientificName, category??animal.category, habitat??animal.habitat, diet??animal.diet, lifespan??animal.lifespan, weight??animal.weight, len??animal.length, conservationStatus??animal.conservationStatus, description??animal.description, m.id] })
       return ok(res, { ...animal, name })
     }
     if (method === 'PATCH') {
       const allowed = { name:'name', scientificName:'scientific_name', category:'category', habitat:'habitat', diet:'diet', lifespan:'lifespan', weight:'weight', conservationStatus:'conservation_status', description:'description' }
       const setCols = []; const args = []
       for (const [k, col] of Object.entries(allowed)) { if (req.body?.[k] !== undefined) { setCols.push(`${col}=?`); args.push(req.body[k]) } }
-      if (req.body?.length !== undefined) { setCols.push('length=?'); args.push(req.body.length) }
+      if (req.body?.length !== undefined) { setCols.push('`length`=?'); args.push(req.body.length) }
       if (setCols.length) await db.execute({ sql: `UPDATE animals SET ${setCols.join(',')} WHERE id=?`, args: [...args, m.id] })
       const updated = toCamel((await db.execute({ sql: 'SELECT * FROM animals WHERE id=?', args: [m.id] })).rows[0])
       return ok(res, updated)
