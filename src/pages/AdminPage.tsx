@@ -17,6 +17,13 @@ const TABLE_LABELS: Record<string, string> = {
   animals: 'Animals (สัตว์)',
 }
 
+// จำนวน seed เริ่มต้น
+const SEED_COUNTS: Record<string, number> = {
+  users: 50, products: 250, posts: 200, students: 30,
+  movies: 250, books: 250, countries: 50, todos: 10,
+  recipes: 100, animals: 100,
+}
+
 const METHOD_COLORS: Record<string, string> = {
   GET:    'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
   POST:   'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400',
@@ -289,9 +296,26 @@ export default function AdminPage() {
           </h2>
           <p className="mb-4 text-sm text-zinc-500">คืนข้อมูลกลับเป็นค่าเริ่มต้น (seed data) สำหรับตารางที่เลือก</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {Object.entries(TABLE_LABELS).map(([table, label]) => (
-              <div key={table} className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
-                <p className="mb-2 text-xs font-medium text-zinc-700 dark:text-zinc-300">{label}</p>
+            {Object.entries(TABLE_LABELS).map(([table, label]) => {
+              const current = stats?.rowCounts?.[table] ?? null
+              const seed = SEED_COUNTS[table]
+              const diff = current !== null ? current - seed : 0
+              const changed = current !== null && current !== seed
+              return (
+              <div key={table} className={cn('rounded-xl border p-3 dark:bg-zinc-900', changed ? 'border-amber-300 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-950/20' : 'border-zinc-200 bg-white dark:border-zinc-800')}>
+                <div className="mb-1.5 flex items-start justify-between gap-1">
+                  <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 leading-tight">{label}</p>
+                  {changed && (
+                    <span className={cn('shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-bold', diff > 0 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400')}>
+                      {diff > 0 ? `+${diff}` : diff}
+                    </span>
+                  )}
+                </div>
+                {current !== null && (
+                  <p className="mb-2 text-xs text-zinc-400 dark:text-zinc-500">
+                    {changed ? <><span className="font-semibold text-zinc-700 dark:text-zinc-200">{current}</span> / {seed}</> : `${current} rows`}
+                  </p>
+                )}
                 {resetConfirm === table ? (
                   <div className="space-y-1.5">
                     <p className="text-xs text-red-500">ยืนยัน reset?</p>
@@ -307,12 +331,12 @@ export default function AdminPage() {
                   </div>
                 ) : (
                   <button onClick={() => setResetConfirm(table)}
-                    className="flex w-full items-center justify-center gap-1 rounded-lg border border-zinc-200 py-1.5 text-xs font-medium text-zinc-600 hover:border-red-300 hover:text-red-600 dark:border-zinc-700 dark:text-zinc-400 dark:hover:text-red-400">
+                    className={cn('flex w-full items-center justify-center gap-1 rounded-lg border py-1.5 text-xs font-medium transition-colors', changed ? 'border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-950/40' : 'border-zinc-200 text-zinc-600 hover:border-red-300 hover:text-red-600 dark:border-zinc-700 dark:text-zinc-400 dark:hover:text-red-400')}>
                     <RefreshCw className="h-3 w-3" /> Reset
                   </button>
                 )}
               </div>
-            ))}
+            )})}
           </div>
         </section>
 
