@@ -259,7 +259,6 @@ export default function AdminPage() {
           <div className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-zinc-500" />
             <span className="font-semibold text-zinc-900 dark:text-zinc-100">Admin Panel</span>
-            <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500 dark:bg-zinc-800">ลับ</span>
           </div>
           <button onClick={handleLogout} className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
             <LogOut className="h-4 w-4" /> ออกจากระบบ
