@@ -27,7 +27,7 @@ export default function NotFoundPage() {
           ไม่พบหน้าที่ต้องการ
         </h1>
         <p className="mb-2 max-w-sm text-sm text-zinc-500 dark:text-zinc-400">
-          ไม่พบ <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">{pathname}</code>
+          ไม่พบ <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">{decodeURIComponent(pathname)}</code>
         </p>
         <p className="mb-8 text-sm text-zinc-400 dark:text-zinc-500">
           หน้านี้ถูกย้าย ลบ หรือไม่เคยมีอยู่
