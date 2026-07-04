@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { MainLayout } from '@/components/layouts/MainLayout'
 import EndpointsPage from '@/pages/EndpointsPage'
 import EndpointDetailPage from '@/pages/EndpointDetailPage'
+import AdminPage from '@/pages/AdminPage'
 
 /**
  * Root application component with routing configuration
@@ -14,6 +15,8 @@ function App() {
           <Route index element={<EndpointsPage />} />
           <Route path="endpoints" element={<Navigate to="/" replace />} />
           <Route path="endpoints/:id" element={<EndpointDetailPage />} />
+          {/* Admin — hidden path */}
+          <Route path="__admin__" element={<AdminPage />} />
           {/* 404 fallback */}
           <Route
             path="*"
