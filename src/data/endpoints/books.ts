@@ -31,15 +31,15 @@ export const bookEndpoints: ApiEndpoint[] = [
     ],
   },
   {
-    id: 'books-get-by-isbn',
-    name: 'Get Book by ISBN',
-    description: 'ดึงข้อมูลหนังสือแบบละเอียดจาก ISBN รวมถึงผู้แต่ง, สำนักพิมพ์, จำนวนหน้า, คะแนน และภาษา',
+    id: 'books-get-by-id',
+    name: 'Get Book by ID',
+    description: 'ดึงข้อมูลหนังสือแบบละเอียดจาก ID รวมถึงผู้แต่ง, สำนักพิมพ์, จำนวนหน้า, คะแนน และภาษา',
     method: 'GET',
     baseUrl: BASE_URL,
-    path: '/api/books/:isbn',
+    path: '/api/books/:id',
     category: 'Books',
     pathParameters: [
-      { name: 'isbn', type: 'string', required: true, description: 'ISBN ของหนังสือ เช่น 9780132350884' },
+      { name: 'id', type: 'string', required: true, description: 'ID ของหนังสือ เช่น 1, 2, 3 ... 250' },
     ],
     requiresAuth: false,
     statusCodes: [
@@ -47,7 +47,7 @@ export const bookEndpoints: ApiEndpoint[] = [
       { code: 404, meaning: 'Not Found', description: 'ไม่พบหนังสือ' },
     ],
     notes: [
-      'ตัวอย่าง (Clean Code): GET /api/books/9780132350884',
+      'ตัวอย่าง: GET /api/books/1',
       'response มี: id, title, author, isbn, genre, description, year, pages, rating, publisher, language, cover, createdAt',
     ],
   },
@@ -90,10 +90,10 @@ export const bookEndpoints: ApiEndpoint[] = [
     description: 'อัปเดตข้อมูลหนังสือทั้งหมด ต้องส่ง title และ author',
     method: 'PUT',
     baseUrl: BASE_URL,
-    path: '/api/books/:isbn',
+    path: '/api/books/:id',
     category: 'Books',
     pathParameters: [
-      { name: 'isbn', type: 'string', required: true, description: 'ISBN ของหนังสือ' },
+      { name: 'id', type: 'string', required: true, description: 'ID ของหนังสือ' },
     ],
     requiredHeaders: [
       { name: 'Content-Type', value: 'application/json', description: 'รูปแบบ request body' },
@@ -126,10 +126,10 @@ export const bookEndpoints: ApiEndpoint[] = [
     description: 'อัปเดตข้อมูลหนังสือบางส่วน ส่งเฉพาะ field ที่ต้องการเปลี่ยน',
     method: 'PATCH',
     baseUrl: BASE_URL,
-    path: '/api/books/:isbn',
+    path: '/api/books/:id',
     category: 'Books',
     pathParameters: [
-      { name: 'isbn', type: 'string', required: true, description: 'ISBN ของหนังสือ' },
+      { name: 'id', type: 'string', required: true, description: 'ID ของหนังสือ' },
     ],
     requiredHeaders: [
       { name: 'Content-Type', value: 'application/json', description: 'รูปแบบ request body' },
@@ -155,7 +155,7 @@ export const bookEndpoints: ApiEndpoint[] = [
       { code: 404, meaning: 'Not Found', description: 'ไม่พบหนังสือ' },
     ],
     notes: [
-      'ตัวอย่างเปลี่ยนแค่ rating: PATCH /api/books/9780132350884 → {"rating": 4.9}',
+      'ตัวอย่างเปลี่ยนแค่ rating: PATCH /api/books/1 → {"rating": 4.9}',
     ],
   },
   {
@@ -164,10 +164,10 @@ export const bookEndpoints: ApiEndpoint[] = [
     description: 'ลบข้อมูลหนังสือออกจากระบบ',
     method: 'DELETE',
     baseUrl: BASE_URL,
-    path: '/api/books/:isbn',
+    path: '/api/books/:id',
     category: 'Books',
     pathParameters: [
-      { name: 'isbn', type: 'string', required: true, description: 'ISBN ของหนังสือ' },
+      { name: 'id', type: 'string', required: true, description: 'ID ของหนังสือ' },
     ],
     requiresAuth: false,
     statusCodes: [
@@ -175,7 +175,7 @@ export const bookEndpoints: ApiEndpoint[] = [
       { code: 404, meaning: 'Not Found', description: 'ไม่พบหนังสือ' },
     ],
     notes: [
-      'ตัวอย่าง: DELETE /api/books/9780132350884',
+      'ตัวอย่าง: DELETE /api/books/1',
       'ไม่ต้องส่ง body ใดๆ',
     ],
   },
