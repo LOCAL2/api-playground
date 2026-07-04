@@ -425,7 +425,7 @@ export default async function handler(req, res) {
       const { title, author, isbn, genre, description, year, pages, rating, publisher, language } = req.body || {}
       if (!title || !author) return err(res, 400, 'title and author are required')
       if (isbn) {
-        const exists = await db.execute({ sql: 'SELECT id FROM books WHERE isbn=?', args: [isbn] })
+        const exists = await db.execute({ sql: 'SELECT id FROM books WHERE id=?', args: [isbn] })
         if (exists.rows.length) return err(res, 409, 'ISBN already exists')
       }
       const id = await nextId('books')
@@ -434,27 +434,27 @@ export default async function handler(req, res) {
     }
   }
 
-  if ((m = matchPath('/books/:isbn', path))) {
-    const r = await db.execute({ sql: 'SELECT * FROM books WHERE isbn=?', args: [m.isbn] })
+  if ((m = matchPath('/books/:id', path))) {
+    const r = await db.execute({ sql: 'SELECT * FROM books WHERE id=?', args: [m.id] })
     if (!r.rows.length) return err(res, 404, 'Book not found')
     const book = toCamel(r.rows[0])
     if (method === 'GET') return ok(res, book)
     if (method === 'PUT') {
       const { title, author, genre, description, year, pages, rating, publisher, language } = req.body || {}
       if (!title || !author) return err(res, 400, 'title and author are required')
-      await db.execute({ sql: 'UPDATE books SET title=?,author=?,genre=?,description=?,year=?,pages=?,rating=?,publisher=?,language=? WHERE isbn=?', args: [title, author, genre??book.genre, description??book.description, year??book.year, pages??book.pages, rating??book.rating, publisher??book.publisher, language??book.language, m.isbn] })
+      await db.execute({ sql: 'UPDATE books SET title=?,author=?,genre=?,description=?,year=?,pages=?,rating=?,publisher=?,language=? WHERE id=?', args: [title, author, genre??book.genre, description??book.description, year??book.year, pages??book.pages, rating??book.rating, publisher??book.publisher, language??book.language, m.id] })
       return ok(res, { ...book, title, author })
     }
     if (method === 'PATCH') {
       const allowed = { title:'title', author:'author', genre:'genre', description:'description', year:'year', pages:'pages', rating:'rating', publisher:'publisher', language:'language' }
       const setCols = []; const args = []
       for (const [k, col] of Object.entries(allowed)) { if (req.body?.[k] !== undefined) { setCols.push(`${col}=?`); args.push(req.body[k]) } }
-      if (setCols.length) await db.execute({ sql: `UPDATE books SET ${setCols.join(',')} WHERE isbn=?`, args: [...args, m.isbn] })
-      const updated = toCamel((await db.execute({ sql: 'SELECT * FROM books WHERE isbn=?', args: [m.isbn] })).rows[0])
+      if (setCols.length) await db.execute({ sql: `UPDATE books SET ${setCols.join(',')} WHERE id=?`, args: [...args, m.id] })
+      const updated = toCamel((await db.execute({ sql: 'SELECT * FROM books WHERE id=?', args: [m.id] })).rows[0])
       return ok(res, updated)
     }
     if (method === 'DELETE') {
-      await db.execute({ sql: 'DELETE FROM books WHERE isbn=?', args: [m.isbn] })
+      await db.execute({ sql: 'DELETE FROM books WHERE id=?', args: [m.id] })
       return res.status(204).end()
     }
   }
