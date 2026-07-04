@@ -31,6 +31,15 @@
   *:focus-visible {
     @apply outline-2 outline-offset-2 outline-zinc-500 dark:outline-zinc-400;
   }
+
+  /* Pointer cursor for all interactive elements */
+  button, [role="button"], select, label[for], summary {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
 }
 
 /* Hide scrollbar for category pills */
