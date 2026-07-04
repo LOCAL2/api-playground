@@ -453,9 +453,10 @@ export default async function handler(req, res) {
     if (method === 'POST') {
       const { title, genre, year, rating, director, cast, duration, language, description } = req.body || {}
       if (!title) return err(res, 400, 'title is required')
-      const nm = { id: nextId(movies), title, description: description || '', genre: genre || [], year: year || null,
+      const newId = nextId(movies)
+      const nm = { id: newId, title, description: description || '', genre: genre || [], year: year || null,
         rating: rating || null, director: director || '', cast: cast || [], duration: duration || null,
-        language: language || 'English', poster: `https://picsum.photos/seed/movie${nextId(movies)}/300/450`,
+        language: language || 'English', poster: `https://picsum.photos/seed/movie${newId}/300/450`,
         createdAt: new Date().toISOString() }
       movies.push(nm)
       return ok(res, nm, 201)
@@ -506,10 +507,11 @@ export default async function handler(req, res) {
       const { title, author, isbn, genre, description, year, pages, rating, publisher, language } = req.body || {}
       if (!title || !author) return err(res, 400, 'title and author are required')
       if (isbn && books.find(b => b.isbn === isbn)) return err(res, 409, 'ISBN already exists')
-      const nb = { id: nextId(books), title, author, isbn: isbn || '', genre: genre || 'General',
+      const newId = nextId(books)
+      const nb = { id: newId, title, author, isbn: isbn || '', genre: genre || 'General',
         description: description || '', year: year || null, pages: pages || null,
         rating: rating || null, publisher: publisher || '', language: language || 'English',
-        cover: `https://picsum.photos/seed/book${nextId(books)}/200/300`, createdAt: new Date().toISOString() }
+        cover: `https://picsum.photos/seed/book${newId}/200/300`, createdAt: new Date().toISOString() }
       books.push(nb)
       return ok(res, nb, 201)
     }
