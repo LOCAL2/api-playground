@@ -684,8 +684,10 @@ export default async function handler(req, res) {
         animals:  async () => { await db.batch([{sql:"DELETE FROM animals"}, ...animalsData.map(a => ({sql:`INSERT INTO animals (id,name,scientific_name,category,habitat,diet,lifespan,weight,` + "`length`" + `,conservation_status,description,image,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,args:[a.id,a.name,a.scientificName||"",a.category||"Mammal",a.habitat||"",a.diet||"Omnivore",a.lifespan||null,a.weight||"",a.length||"",a.conservationStatus||"Least Concern",a.description||"",a.image||"",a.createdAt]}))]); return animalsData.length },
       }
       if (!seedMap[tableName]) return err(res, 400, 'ไม่รู้จัก table: ' + tableName)
+      if (!seedMap[tableName]) return err(res, 400, 'ไม่รู้จัก table: ' + tableName)
       const count = await seedMap[tableName]()
-      await db.execute({ sql:'INSERT INTO activity_logs (method,path,body,ip,status_code,timestamp) VALUES (?,?,?,?,?,?)', args:['POST','/api/admin/reset/'+tableName,null,'admin',200,new Date().toISOString()] })
+      // ล้าง mutation log ของ table นี้เพื่อให้ 'มีการแก้ไข' badge หายไป
+      await db.execute({ sql: "DELETE FROM activity_logs WHERE path LIKE ? AND method IN ('POST','PUT','PATCH','DELETE')", args: ['/api/' + tableName + '%'] })
       return ok(res, { message: 'reset ' + tableName + ' สำเร็จ (' + count + ' rows)' })
     }
 
