@@ -92,12 +92,10 @@ export function Sidebar({ className }: SidebarProps) {
                 <div className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors', isActive ? activeIconClass : inactiveIconClass)}>
                   {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
                 </div>
-                <span className="flex-1 truncate">
-                  {cat.name}
-                  {cat.name === 'Students' && (
-                    <span className="ml-1.5 rounded-full bg-blue-500 px-1.5 py-0.5 text-[9px] font-bold text-white align-middle">TNK</span>
-                  )}
-                </span>
+                <span className={cat.name === 'Students' ? 'flex-1' : 'flex-1 truncate'}>{cat.name}</span>
+                {cat.name === 'Students' && (
+                  <span className="shrink-0 rounded-full bg-blue-500 px-1.5 py-0.5 text-[9px] font-bold text-white">TNK</span>
+                )}
                 {count > 0 && (
                   <span className={cn('rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums transition-colors', isActive ? activeBadgeClass : inactiveBadgeClass)}>
                     {count}
