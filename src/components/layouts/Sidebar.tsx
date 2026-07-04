@@ -73,7 +73,6 @@ export function Sidebar({ className }: SidebarProps) {
           Categories
         </p>
         <nav className="flex flex-col gap-0.5">
-        <nav className="flex flex-col gap-0.5">
           {categories.map(cat => {
             const Icon = categoryIcons[cat.name]
             const isActive = isOnRoot && activeCategory === cat.name

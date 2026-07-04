@@ -4,6 +4,7 @@ import EndpointsPage from '@/pages/EndpointsPage'
 import EndpointDetailPage from '@/pages/EndpointDetailPage'
 import AdminPage from '@/pages/AdminPage'
 import NotFoundPage from '@/pages/NotFoundPage'
+import ChangelogPage from '@/pages/ChangelogPage'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route index element={<EndpointsPage />} />
           <Route path="endpoints" element={<Navigate to="/" replace />} />
           <Route path="endpoints/:id" element={<EndpointDetailPage />} />
+          <Route path="changelog" element={<ChangelogPage />} />
           <Route path="dev" element={<AdminPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
