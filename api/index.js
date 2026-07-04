@@ -538,7 +538,7 @@ export default async function handler(req, res) {
     if (method === 'PUT') {
       const { name, scientificName, category, habitat, diet, lifespan, weight, length: len, conservationStatus, description } = req.body || {}
       if (!name) return err(res, 400, 'name is required')
-      await db.execute({ sql: 'UPDATE animals SET name=?,scientific_name=?,category=?,habitat=?,diet=?,lifespan=?,weight=?,`length`=?,conservation_status=?,description=? WHERE id=?', args: [name, scientificName??animal.scientificName, category??animal.category, habitat??animal.habitat, diet??animal.diet, lifespan??animal.lifespan, weight??animal.weight, len??animal.length, conservationStatus??animal.conservationStatus, description??animal.description, m.id] })
+      await db.execute({ sql: 'UPDATE animals SET name=?,scientific_name=?,category=?,habitat=?,diet=?,lifespan=?,weight=?,length=?,conservation_status=?,description=? WHERE id=?', args: [name, scientificName??animal.scientificName, category??animal.category, habitat??animal.habitat, diet??animal.diet, lifespan!=null?lifespan:animal.lifespan, weight!=null?weight:animal.weight, len!=null?len:(animal.length||''), conservationStatus??animal.conservationStatus, description??animal.description, m.id] })
       return ok(res, { ...animal, name })
     }
     if (method === 'PATCH') {
