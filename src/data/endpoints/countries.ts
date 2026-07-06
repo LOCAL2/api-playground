@@ -89,7 +89,7 @@ export const countryEndpoints: ApiEndpoint[] = [
     path: '/api/countries/:id',
     category: 'Countries',
     pathParameters: [
-      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ', example: '1' },
+      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ' },
     ],
     requiredHeaders: [
       { name: 'Content-Type', value: 'application/json', description: 'รูปแบบ request body' },
@@ -127,7 +127,7 @@ export const countryEndpoints: ApiEndpoint[] = [
     path: '/api/countries/:id',
     category: 'Countries',
     pathParameters: [
-      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ', example: '1' },
+      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ' },
     ],
     requiredHeaders: [
       { name: 'Content-Type', value: 'application/json', description: 'รูปแบบ request body' },
@@ -163,7 +163,7 @@ export const countryEndpoints: ApiEndpoint[] = [
     path: '/api/countries/:id',
     category: 'Countries',
     pathParameters: [
-      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ', example: '1' },
+      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ' },
     ],
     requiresAuth: false,
     statusCodes: [
