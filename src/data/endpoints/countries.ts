@@ -28,15 +28,15 @@ export const countryEndpoints: ApiEndpoint[] = [
     ],
   },
   {
-    id: 'countries-get-by-code',
-    name: 'Get Country by Code',
-    description: 'ดึงข้อมูลประเทศแบบละเอียดจากรหัส ISO 3166-1 alpha-2 เช่น TH, US, JP',
+    id: 'countries-get-by-id',
+    name: 'Get Country by ID',
+    description: 'ดึงข้อมูลประเทศแบบละเอียดจาก ID ตัวเลข เช่น 1, 2, 3',
     method: 'GET',
     baseUrl: BASE_URL,
-    path: '/api/countries/:code',
+    path: '/api/countries/:id',
     category: 'Countries',
     pathParameters: [
-      { name: 'code', type: 'string', required: true, description: 'รหัสประเทศ ISO 3166-1 alpha-2 (case-insensitive) เช่น TH, US, JP' },
+      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ เช่น 1, 2, 3', example: '1' },
     ],
     requiresAuth: false,
     statusCodes: [
@@ -44,8 +44,8 @@ export const countryEndpoints: ApiEndpoint[] = [
       { code: 404, meaning: 'Not Found', description: 'ไม่พบประเทศ' },
     ],
     notes: [
-      'ตัวอย่าง: GET /api/countries/TH',
-      'รหัส case-insensitive (th, TH ได้ผลเหมือนกัน)',
+      'ตัวอย่าง: GET /api/countries/1 (Thailand)',
+      'ใช้ id ตัวเลข ไม่ใช่ country code เช่น TH',
     ],
   },
   {
@@ -86,10 +86,10 @@ export const countryEndpoints: ApiEndpoint[] = [
     description: 'อัปเดตข้อมูลประเทศทั้งหมด ต้องส่ง name',
     method: 'PUT',
     baseUrl: BASE_URL,
-    path: '/api/countries/:code',
+    path: '/api/countries/:id',
     category: 'Countries',
     pathParameters: [
-      { name: 'code', type: 'string', required: true, description: 'รหัสประเทศ ISO 3166-1 alpha-2' },
+      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ', example: '1' },
     ],
     requiredHeaders: [
       { name: 'Content-Type', value: 'application/json', description: 'รูปแบบ request body' },
@@ -114,6 +114,9 @@ export const countryEndpoints: ApiEndpoint[] = [
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง name' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบประเทศ' },
     ],
+    notes: [
+      'ตัวอย่าง: PUT /api/countries/1',
+    ],
   },
   {
     id: 'countries-patch',
@@ -121,10 +124,10 @@ export const countryEndpoints: ApiEndpoint[] = [
     description: 'อัปเดตข้อมูลประเทศบางส่วน ส่งเฉพาะ field ที่ต้องการเปลี่ยน',
     method: 'PATCH',
     baseUrl: BASE_URL,
-    path: '/api/countries/:code',
+    path: '/api/countries/:id',
     category: 'Countries',
     pathParameters: [
-      { name: 'code', type: 'string', required: true, description: 'รหัสประเทศ ISO 3166-1 alpha-2' },
+      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ', example: '1' },
     ],
     requiredHeaders: [
       { name: 'Content-Type', value: 'application/json', description: 'รูปแบบ request body' },
@@ -148,7 +151,7 @@ export const countryEndpoints: ApiEndpoint[] = [
       { code: 404, meaning: 'Not Found', description: 'ไม่พบประเทศ' },
     ],
     notes: [
-      'ตัวอย่างอัปเดตประชากร: PATCH /api/countries/TH → {"population": 72000000}',
+      'ตัวอย่างอัปเดตประชากร: PATCH /api/countries/1 → {"population": 72000000}',
     ],
   },
   {
@@ -157,10 +160,10 @@ export const countryEndpoints: ApiEndpoint[] = [
     description: 'ลบข้อมูลประเทศออกจากระบบ',
     method: 'DELETE',
     baseUrl: BASE_URL,
-    path: '/api/countries/:code',
+    path: '/api/countries/:id',
     category: 'Countries',
     pathParameters: [
-      { name: 'code', type: 'string', required: true, description: 'รหัสประเทศ ISO 3166-1 alpha-2' },
+      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ', example: '1' },
     ],
     requiresAuth: false,
     statusCodes: [
@@ -168,7 +171,7 @@ export const countryEndpoints: ApiEndpoint[] = [
       { code: 404, meaning: 'Not Found', description: 'ไม่พบประเทศ' },
     ],
     notes: [
-      'ตัวอย่าง: DELETE /api/countries/TH',
+      'ตัวอย่าง: DELETE /api/countries/1',
       'ไม่ต้องส่ง body ใดๆ',
     ],
   },
