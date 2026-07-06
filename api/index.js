@@ -267,8 +267,9 @@ export default async function handler(req, res) {
   // ── TODOS ──────────────────────────────────────────────────────────────
   if (path === '/todos') {
     if (method === 'GET') {
-      const { completed, priority } = query
+      const { search, completed, priority } = query
       let sql = 'SELECT * FROM todos WHERE 1=1'; const args = []
+      if (search)    { sql += ' AND title LIKE ?'; args.push(`%${search}%`) }
       if (completed !== undefined) { sql += ' AND completed=?'; args.push(completed==='true'?1:0) }
       if (priority)  { sql += ' AND priority=?'; args.push(priority) }
       const rows = (await db.execute({ sql, args })).rows.map(r => ({ ...toCamel(r), completed: r.completed===1||r.completed==='1' }))
@@ -342,27 +343,27 @@ export default async function handler(req, res) {
     }
   }
 
-  if ((m = matchPath('/countries/:code', path))) {
-    const r = await db.execute({ sql: 'SELECT * FROM countries WHERE code=?', args: [m.code.toUpperCase()] })
+  if ((m = matchPath('/countries/:id', path))) {
+    const r = await db.execute({ sql: 'SELECT * FROM countries WHERE id=?', args: [m.id] })
     if (!r.rows.length) return err(res, 404, 'Country not found')
     const country = toCamel(r.rows[0])
     if (method === 'GET') return ok(res, country)
     if (method === 'PUT') {
       const { name, capital, region, population, area, currency, language, flag } = req.body || {}
       if (!name) return err(res, 400, 'name is required')
-      await db.execute({ sql: 'UPDATE countries SET name=?,capital=?,region=?,population=?,area=?,currency=?,language=?,flag=? WHERE code=?', args: [name, capital??country.capital, region??country.region, population??country.population, area??country.area, currency??country.currency, language??country.language, flag??country.flag, m.code.toUpperCase()] })
+      await db.execute({ sql: 'UPDATE countries SET name=?,capital=?,region=?,population=?,area=?,currency=?,language=?,flag=? WHERE id=?', args: [name, capital??country.capital, region??country.region, population??country.population, area??country.area, currency??country.currency, language??country.language, flag??country.flag, m.id] })
       return ok(res, { ...country, name, capital: capital??country.capital })
     }
     if (method === 'PATCH') {
       const allowed = { name:'name', capital:'capital', region:'region', population:'population', area:'area', currency:'currency', language:'language', flag:'flag' }
       const setCols = []; const args = []
       for (const [k, col] of Object.entries(allowed)) { if (req.body?.[k] !== undefined) { setCols.push(`${col}=?`); args.push(req.body[k]) } }
-      if (setCols.length) await db.execute({ sql: `UPDATE countries SET ${setCols.join(',')} WHERE code=?`, args: [...args, m.code.toUpperCase()] })
-      const updated = toCamel((await db.execute({ sql: 'SELECT * FROM countries WHERE code=?', args: [m.code.toUpperCase()] })).rows[0])
+      if (setCols.length) await db.execute({ sql: `UPDATE countries SET ${setCols.join(',')} WHERE id=?`, args: [...args, m.id] })
+      const updated = toCamel((await db.execute({ sql: 'SELECT * FROM countries WHERE id=?', args: [m.id] })).rows[0])
       return ok(res, updated)
     }
     if (method === 'DELETE') {
-      await db.execute({ sql: 'DELETE FROM countries WHERE code=?', args: [m.code.toUpperCase()] })
+      await db.execute({ sql: 'DELETE FROM countries WHERE id=?', args: [m.id] })
       return res.status(204).end()
     }
   }
