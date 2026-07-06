@@ -45,7 +45,6 @@ export const countryEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'ตัวอย่าง: GET /api/countries/1 (Thailand)',
-      'ใช้ id ตัวเลข ไม่ใช่ country code เช่น TH',
     ],
   },
   {
