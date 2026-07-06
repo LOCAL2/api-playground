@@ -80,6 +80,9 @@ export const productEndpoints: ApiEndpoint[] = [
       { code: 201, meaning: 'Created', description: 'เพิ่มสินค้าสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง name หรือ price' },
     ],
+    notes: [
+      'ตัวอย่าง: POST /api/products → {"name": "Wireless Headphone Pro", "price": 1990, "stock": 50}',
+    ],
   },
   {
     id: 'products-update',
@@ -110,6 +113,9 @@ export const productEndpoints: ApiEndpoint[] = [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง name หรือ price' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบสินค้า' },
+    ],
+    notes: [
+      'ตัวอย่าง: PUT /api/products/1 → {"name": "Wireless Headphone Pro Max", "price": 2490, "stock": 30}',
     ],
   },
   {

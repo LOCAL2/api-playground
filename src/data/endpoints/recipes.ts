@@ -85,6 +85,9 @@ export const recipeEndpoints: ApiEndpoint[] = [
       { code: 201, meaning: 'Created', description: 'เพิ่มสูตรอาหารสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title' },
     ],
+    notes: [
+      'ตัวอย่าง: POST /api/recipes → {"title": "ผัดกะเพราหมูสับ", "category": "Thai", "difficulty": "easy", "calories": 420}',
+    ],
   },
   {
     id: 'recipes-update',
@@ -122,6 +125,9 @@ export const recipeEndpoints: ApiEndpoint[] = [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบสูตรอาหาร' },
+    ],
+    notes: [
+      'ตัวอย่าง: PUT /api/recipes/1 → {"title": "ผัดกะเพราหมูสับ (Updated)", "category": "Thai", "difficulty": "easy"}',
     ],
   },
   {

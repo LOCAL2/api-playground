@@ -82,6 +82,9 @@ export const movieEndpoints: ApiEndpoint[] = [
       { code: 201, meaning: 'Created', description: 'เพิ่มหนังสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title' },
     ],
+    notes: [
+      'ตัวอย่าง: POST /api/movies → {"title": "My Movie", "genre": ["Action","Drama"], "year": 2024, "rating": 8.5}',
+    ],
   },
   {
     id: 'movies-update',
@@ -117,6 +120,9 @@ export const movieEndpoints: ApiEndpoint[] = [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบหนัง' },
+    ],
+    notes: [
+      'ตัวอย่าง: PUT /api/movies/1 → {"title": "Updated Movie Title", "year": 2024, "rating": 9.0}',
     ],
   },
   {

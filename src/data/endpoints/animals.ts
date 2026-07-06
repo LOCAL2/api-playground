@@ -86,6 +86,9 @@ export const animalEndpoints: ApiEndpoint[] = [
       { code: 201, meaning: 'Created', description: 'เพิ่มสัตว์สำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง name' },
     ],
+    notes: [
+      'ตัวอย่าง: POST /api/animals → {"name": "Red Panda", "scientificName": "Ailurus fulgens", "category": "Mammal", "conservationStatus": "Endangered"}',
+    ],
   },
   {
     id: 'animals-update',
@@ -122,6 +125,9 @@ export const animalEndpoints: ApiEndpoint[] = [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง name' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบสัตว์' },
+    ],
+    notes: [
+      'ตัวอย่าง: PUT /api/animals/1 → {"name": "Lion", "category": "Mammal", "habitat": "Grassland", "diet": "Carnivore"}',
     ],
   },
   {

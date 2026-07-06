@@ -42,6 +42,9 @@ export const studentEndpoints: ApiEndpoint[] = [
       { code: 200, meaning: 'OK', description: 'คืนข้อมูลนักศึกษา (มี studentId อยู่ใน response)' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบนักศึกษา' },
     ],
+    notes: [
+      'ตัวอย่าง: GET /api/students/1',
+    ],
   },
   {
     id: 'students-create',

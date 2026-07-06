@@ -80,6 +80,7 @@ export const userEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'password จะถูก hash ก่อนบันทึก ไม่เก็บ plain text',
+      'ตัวอย่าง: POST /api/users → {"name": "John Doe", "email": "john@example.com", "password": "password123"}',
     ],
   },
   {
@@ -114,7 +115,7 @@ export const userEndpoints: ApiEndpoint[] = [
       { code: 404, meaning: 'Not Found', description: 'ไม่พบผู้ใช้' },
     ],
     notes: [
-      'ตัวอย่าง: PUT /api/users/1',
+      'ตัวอย่าง: PUT /api/users/1 → {"name": "Jane Doe", "email": "jane@example.com"}',
     ],
   },
   {

@@ -83,6 +83,9 @@ export const bookEndpoints: ApiEndpoint[] = [
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title หรือ author' },
       { code: 409, meaning: 'Conflict', description: 'ISBN นี้มีในระบบแล้ว' },
     ],
+    notes: [
+      'ตัวอย่าง: POST /api/books → {"title": "Clean Code", "author": "Robert C. Martin", "genre": "Programming", "year": 2008}',
+    ],
   },
   {
     id: 'books-update',
@@ -118,6 +121,9 @@ export const bookEndpoints: ApiEndpoint[] = [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title หรือ author' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบหนังสือ' },
+    ],
+    notes: [
+      'ตัวอย่าง: PUT /api/books/1 → {"title": "Clean Code 2nd Edition", "author": "Robert C. Martin", "year": 2025}',
     ],
   },
   {

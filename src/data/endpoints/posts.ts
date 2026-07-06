@@ -80,6 +80,7 @@ export const postEndpoints: ApiEndpoint[] = [
       'excerpt จะถูก generate จาก content อัตโนมัติ (150 ตัวอักษรแรก)',
       'status จะเป็น "published" เสมอ',
       'userId จะถูก set เป็น "1" โดยอัตโนมัติ',
+      'ตัวอย่าง: POST /api/posts → {"title": "Introduction to REST APIs", "content": "REST API คือ...", "tags": ["api", "tutorial"]}',
     ],
   },
   {
@@ -110,6 +111,9 @@ export const postEndpoints: ApiEndpoint[] = [
       { code: 200, meaning: 'OK', description: 'อัปเดตสำเร็จ' },
       { code: 400, meaning: 'Bad Request', description: 'ไม่ได้ส่ง title หรือ content' },
       { code: 404, meaning: 'Not Found', description: 'ไม่พบโพสต์' },
+    ],
+    notes: [
+      'ตัวอย่าง: PUT /api/posts/1 → {"title": "REST APIs Explained", "content": "Updated content..."}',
     ],
   },
   {
