@@ -114,7 +114,7 @@ export const countryEndpoints: ApiEndpoint[] = [
       { code: 404, meaning: 'Not Found', description: 'ไม่พบประเทศ' },
     ],
     notes: [
-      'ตัวอย่าง: PUT /api/countries/1',
+      'ตัวอย่าง: PUT /api/countries/1 → {"name": "Thailand", "capital": "Bangkok", "region": "Asia"}',
     ],
   },
   {
