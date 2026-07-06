@@ -12,6 +12,7 @@ export const todoEndpoints: ApiEndpoint[] = [
     path: '/api/todos',
     category: 'Todos',
     queryParameters: [
+      { name: 'search', type: 'string', required: false, description: 'ค้นหาจาก title ของ Todo', example: 'รายงาน' },
       { name: 'completed', type: 'boolean', required: false, description: 'กรองตามสถานะ: true = เสร็จแล้ว, false = ยังไม่เสร็จ', example: 'false' },
       { name: 'priority', type: 'string', required: false, description: 'กรองตาม priority: low, medium, high', example: 'high' },
     ],
@@ -21,6 +22,7 @@ export const todoEndpoints: ApiEndpoint[] = [
     ],
     notes: [
       'ตัวอย่าง: GET /api/todos',
+      'ตัวอย่าง search: GET /api/todos?search=รายงาน',
       'ตัวอย่าง filter งานยังไม่เสร็จ: GET /api/todos?completed=false',
       'ตัวอย่าง filter priority สูง: GET /api/todos?priority=high',
     ],
