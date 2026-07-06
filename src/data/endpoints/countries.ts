@@ -36,7 +36,7 @@ export const countryEndpoints: ApiEndpoint[] = [
     path: '/api/countries/:id',
     category: 'Countries',
     pathParameters: [
-      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ เช่น 1, 2, 3', example: '1' },
+      { name: 'id', type: 'number', required: true, description: 'ID ตัวเลขของประเทศ เช่น 1, 2, 3' },
     ],
     requiresAuth: false,
     statusCodes: [
